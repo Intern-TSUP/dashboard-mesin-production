@@ -254,8 +254,12 @@
                         <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
-                                <span class="input-group-text">Liter</span>
+                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
+                                <select class="form-control form-select w-25" id="kapasitas" name="kapasitas" required>
+                                    <option value="">Satuan</option>
+                                    <option value="Kilogram">Kilogram</option>
+                                    <option value="Liter">Liter</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -263,8 +267,19 @@
                         <label for="speed" class="col-sm-4 col-form-label">Speed</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
-                                <span class="input-group-text">RPM</span>
+                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
+                                <select class="form-control form-select w-25" id="speed" name="speed" required>
+                                    <option value="">Satuan</option>
+                                    <option value="Batch/menit">Batch/menit</option>
+                                    <option value="Blister/menit">Blister/menit</option>
+                                    <option value="Botol/menit">Botol/menit</option>
+                                    <option value="Box/menit">Box/menit</option>
+                                    <option value="Cap/menit">Cap/menit</option>
+                                    <option value="Lot/menit">Lot/menit</option>
+                                    <option value="Strip/menit">Strip/menit</option>
+                                    <option value="Tab/menit">Tab/menit</option>
+                                    <option value="Tub/menit">Tub/menit</option>
+                                </select>
                             </div>
                         </div>
                     </div>

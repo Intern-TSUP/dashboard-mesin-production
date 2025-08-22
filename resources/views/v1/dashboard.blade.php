@@ -280,9 +280,9 @@
                                 </div>
                                 <div class="modal-body px-5">
                                     <div class="row align-items-center mb-3">
-                                        <label for="filter_lines" class="col-sm-4 col-form-label">Line</label>
+                                        <label for="excel_filter_lines" class="col-sm-4 col-form-label">Line</label>
                                         <div class="col-sm-8">
-                                            <select id="filter_lines" class="form-select form-select-sm w-300px">
+                                            <select id="excel_filter_lines" class="form-select form-select-sm w-300px">
                                                 <option value="">Semua Line</option>
                                                 @foreach ($filter_lines as $line)
                                                     <option value="{{ $line->id }}">{{ $line->name }}</option>
@@ -291,9 +291,9 @@
                                         </div>
                                     </div>
                                     <div class="row align-items-center mb-3">
-                                        <label for="filter_proses" class="col-sm-4 col-form-label">Proses</label>
+                                        <label for="excel_filter_proses" class="col-sm-4 col-form-label">Proses</label>
                                         <div class="col-sm-8">
-                                            <select id="filter_proses" class="form-select form-select-sm w-300px">
+                                            <select id="excel_filter_proses" class="form-select form-select-sm w-300px">
                                                 <option value="">Semua Proses</option>
                                                 @foreach ($filter_proses as $proses)
                                                     <option value="{{ $proses->id }}">{{ $proses->name }}</option>
@@ -535,8 +535,8 @@
                 method: "POST",
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
-                    filter_lines: $('#filter_lines').val(),
-                    filter_proses: $('#filter_proses').val()
+                    filter_lines: $('#excel_filter_lines').val(),
+                    filter_proses: $('#excel_filter_proses').val()
                 },
                 xhrFields: {
                     responseType: 'blob'
@@ -564,7 +564,7 @@
                         return;
                     }
 
-                    let filename = "ListMachine.xlsx";
+                    let filename = "DataMachine.xlsx";
                     let disposition = xhr.getResponseHeader('Content-Disposition');
                     if (disposition && disposition.includes('filename=')) {
                         filename = disposition.split('filename=')[1].replace(/"/g, '');
@@ -609,6 +609,39 @@
                 }
             });
         });
+
+        // $('#submitFormDownloadExcel').on('click', function() {
+        //     // Buat form dinamis untuk submit
+        //     let form = $('<form>', {
+        //         'action': "{{ route('v1.dashboard.generateExcel') }}", // <-- Arahkan ke rute export
+        //         'method': 'POST',
+        //         'target': '_blank' // Buka di tab baru
+        //     }).append(
+        //         $('<input>', {
+        //             'name': '_token',
+        //             'value': '{{ csrf_token() }}',
+        //             'type': 'hidden'
+        //         })
+        //     ).append(
+        //         $('<input>', {
+        //             'name': 'filter_lines',
+        //             'value': $('#excel_filter_lines').val(), // Ambil nilai filter
+        //             'type': 'hidden'
+        //         })
+        //     ).append(
+        //         $('<input>', {
+        //             'name': 'filter_proses',
+        //             'value': $('#excel_filter_proses').val(), // Ambil nilai filter
+        //             'type': 'hidden'
+        //         })
+        //     );
+
+        //     // Tambahkan form ke body, submit, lalu hapus
+        //     $('body').append(form);
+        //     form.submit();
+        //     form.remove();
+        //     $('#export_excel_modal').modal('hide');
+        // });
 
     </script>
 @endsection

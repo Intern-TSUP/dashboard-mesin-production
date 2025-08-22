@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Exports\MesinsExport;
 use App\Models\Mesin;
 use App\Models\Proses;
 use App\Models\Roles;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -51,7 +53,7 @@ class DashboardController extends Controller
                 });
             });
 
-        $data = $query->orderBy('created_at', 'desc')->get();
+        $data = $query->orderBy('line_id', 'desc')->get();
 
         // Jika tidak ada data, kembalikan respons JSON
         if ($data->isEmpty()) {
@@ -129,18 +131,34 @@ class DashboardController extends Controller
                 });
             });
 
-        $data = $query->orderBy('created_at', 'desc')->get();
+        $data = $query->orderBy('line_id', 'desc')->get();
 
-        if ($data->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tidak ada data untuk tanggal yang dipilih.'
-            ], 404);
+        // if ($data->isEmpty()) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Tidak ada data untuk filter yang dipilih.'
+        //     ], 404);
+        // }
+
+        $line_name = 'SEMUA LINE';
+        if ($filter_lines) {
+            $line = Line::find($filter_lines);
+            if ($line) {
+                $line_name = $line->name;
+            }
         }
 
-        $line_name = $filter_lines ? Line::find($filter_lines)->name : 'Semua Line';
-        $proses_name = $filter_proses ? Proses::find($filter_proses)->name : 'Semua Proses';
-        $printedFromUrl = url()->previous();
+        $proses_name = 'SEMUA PROSES';
+        if ($filter_proses) {
+            $proses = Proses::find($filter_proses);
+            if ($proses) {
+                $proses_name = $proses->name;
+            }
+        }
+
+        // $line_name = $filter_lines ? Line::find($filter_lines)->name : 'Semua Line';
+        // $proses_name = $filter_proses ? Proses::find($filter_proses)->name : 'Semua Proses';
+        $printedFromUrl = url()->current();
 
         $model = Mesin::class;
         $cetakanKe = UserPrint::query()
@@ -179,32 +197,20 @@ class DashboardController extends Controller
         }
 
         // Prepare data for Excel
-        $exportData = [];
-        foreach ($data as $item) {
-            $exportData[] = [
-                'Nama Mesin' => $item->name,
-                'Line' => $item->line->name ?? '-',
-                'Proses' => $item->proses->name ?? '-',
-                'Tanggal Dibuat' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '-',
-            ];
-        }
+        // $exportData = [];
+        // foreach ($data as $item) {
+        //     $exportData[] = [
+        //         'Nama Mesin' => $item->name,
+        //         'Line' => $item->line->name ?? '-',
+        //         'Proses' => $item->proses->name ?? '-',
+        //         'Tanggal Dibuat' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '-',
+        //     ];
+        // }
 
         // Generate Excel file
         $filename = 'Data_Mesin_' . time() . '.xlsx';
 
-        return response()->streamDownload(function () use ($exportData) {
-            $file = fopen('php://output', 'w');
-            if (!empty($exportData)) {
-                fputcsv($file, array_keys($exportData[0]));
-                foreach ($exportData as $row) {
-                    fputcsv($file, $row);
-                }
-            }
-            fclose($file);
-        }, $filename, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Cache-Control' => 'no-store, no-cache',
-        ]);
+        return Excel::download(new MesinsExport($data, $line_name, $proses_name, $cetakanKe, $printedFromUrl), $filename);
     }
 
 }
