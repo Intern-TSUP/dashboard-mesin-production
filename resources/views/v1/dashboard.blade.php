@@ -135,13 +135,13 @@
                                         </p>
         
                                         @if ($item->kapasitas)
-                                            <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }} Liter</strong></p>
+                                            <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }} {{ $item->satuanKapasitas }}  </strong></p>
                                         @else
                                             <p class="card-text">Kapasitas: <strong>-</strong></p>
                                         @endif
 
                                         @if ($item->speed)
-                                            <p class="card-text">Speed: <strong>{{ $item->speed }} RPM</strong></p>
+                                            <p class="card-text">Speed: <strong>{{ $item->speed }} {{ $item->satuanSpeed }}</strong></p>
                                         @else
                                             <p class="card-text">Speed: <strong>-</strong></p>
                                         @endif
@@ -409,8 +409,8 @@
                             <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
                             <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
                             <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
-                            <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
-                            <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas} ${mesin.satuanKapasitas}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr>
                                 <th>Link Kualifikasi</th>

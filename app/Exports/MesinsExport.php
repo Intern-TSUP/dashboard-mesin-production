@@ -52,7 +52,7 @@ class MesinsExport implements
         $drawing->setPath(public_path('assets/logo/Logo-Kalbe-&-BSB_Original.png'));
         $drawing->setCoordinates('F1');
         $drawing->setHeight(85); 
-        $drawing->setOffsetX(-85); 
+        $drawing->setOffsetX(-75); 
         $drawing->setOffsetY(10);
         return $drawing;
     }
@@ -96,8 +96,8 @@ class MesinsExport implements
             $mesin->proses->pluck('name')->implode(', '),
             $mesin->kodeMesin,
             $mesin->name,
-            $mesin->kapasitas ?? 'NA',
-            $mesin->speed ?? 'NA',
+            $mesin->kapasitas . ' ' . $mesin->satuanKapasitas,
+            $mesin->speed . ' ' . $mesin->satuanSpeed,
             $mesin->jumlahOperator,
             $mesin->keterangan ?? 'NA',
             '',
@@ -136,11 +136,11 @@ class MesinsExport implements
 
         $sheet->getColumnDimension('A')->setWidth(5);
         $sheet->getColumnDimension('B')->setWidth(10);
-        $sheet->getColumnDimension('C')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(30);
         $sheet->getColumnDimension('D')->setWidth(25);
         $sheet->getColumnDimension('E')->setWidth(30);
-        $sheet->getColumnDimension('F')->setWidth(15);
-        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
         $sheet->getColumnDimension('H')->setWidth(20);
         $sheet->getColumnDimension('I')->setWidth(40); 
 

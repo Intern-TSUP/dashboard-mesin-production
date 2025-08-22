@@ -68,8 +68,9 @@ class MesinController extends Controller
                 })
                 ->editColumn('kapasitas', function($mesin) {
                     $kapasitas = $mesin->kapasitas;
+                    $satuanKapasitas = $mesin->satuanKapasitas;
                     if ($kapasitas) {
-                        $kapasitas = $kapasitas . ' Liter';
+                        $kapasitas = $kapasitas . ' ' . $satuanKapasitas;
                     } else {
                         $kapasitas = '-';
                     }
@@ -77,8 +78,9 @@ class MesinController extends Controller
                 })
                 ->editColumn('speed', function($mesin) {
                     $speed = $mesin->speed;
+                    $satuanSpeed = $mesin->satuanSpeed;
                     if ($speed) {
-                        $speed = $speed . ' RPM';
+                        $speed = $speed . ' ' . $satuanSpeed;
                     } else {
                         $speed = '-';
                     }
@@ -112,8 +114,10 @@ class MesinController extends Controller
             'line_id'          => 'required|exists:lines,id',
             'kodeMesin'         => 'required|string|unique:mesins,kodeMesin',
             'name'              => 'required|string|max:255',
-            'kapasitas'         => 'nullable|string',
-            'speed'             => 'nullable|string',
+            'kapasitas'         => 'required|string',
+            'satuanKapasitas'   => 'required|string',
+            'speed'             => 'required|string',
+            'satuanSpeed'       => 'required|string',
             'jumlahOperator'    => 'required|integer',
             'proses_ids'        => 'required|array',
             'keterangan'        => 'nullable|string',
@@ -135,11 +139,13 @@ class MesinController extends Controller
                 'line_id'           => $validatedData['line_id'],
                 'kodeMesin'         => $validatedData['kodeMesin'],
                 'name'              => $validatedData['name'],
-                'kapasitas'         => $validatedData['kapasitas'] ?? null,
-                'speed'             => $validatedData['speed'] ?? null,
+                'kapasitas'         => $validatedData['kapasitas'],
+                'satuanKapasitas'   => $validatedData['satuanKapasitas'],
+                'speed'             => $validatedData['speed'],
+                'satuanSpeed'       => $validatedData['satuanSpeed'],
                 'jumlahOperator'    => $validatedData['jumlahOperator'],
-                'keterangan'        => $validatedData['keterangan'] ?? null,
-                'link_kualifikasi'   => $validatedData['link_kualifikasi'] ?? null,
+                'keterangan'        => $validatedData['keterangan'],
+                'link_kualifikasi'  => $validatedData['link_kualifikasi'] ?? null,
                 'image'             => $validatedData['image'] ?? null,
             ]);
 
@@ -196,8 +202,10 @@ class MesinController extends Controller
             'proses_ids'        => 'required|array',
             'kodeMesin'         => 'required|string',
             'name'              => 'required|string|max:255',
-            'kapasitas'         => 'nullable|string',
-            'speed'             => 'nullable|string',
+            'kapasitas'         => 'required|string',
+            'satuanKapasitas'   => 'required|string',
+            'speed'             => 'required|string',
+            'satuanSpeed'       => 'required|string',
             'jumlahOperator'    => 'required|integer',
             'keterangan'        => 'nullable|string',
             'link_kualifikasi'   => 'nullable|url',
@@ -221,15 +229,17 @@ class MesinController extends Controller
 
         try {
             $mesin->update([
-                'line_id'        => $validatedData['line_id'],
-                'kodeMesin'      => $validatedData['kodeMesin'],
-                'name'           => $validatedData['name'],
-                'kapasitas'      => $validatedData['kapasitas'] ?? null,
-                'speed'          => $validatedData['speed'] ?? null,
-                'jumlahOperator' => $validatedData['jumlahOperator'],
-                'keterangan'     => $validatedData['keterangan'] ?? null,
-                'link_kualifikasi'   => $validatedData['link_kualifikasi'] ?? null,
-                'image'          => $validatedData['image'] ?? null,
+                'line_id'           => $validatedData['line_id'],
+                'kodeMesin'         => $validatedData['kodeMesin'],
+                'name'              => $validatedData['name'],
+                'kapasitas'         => $validatedData['kapasitas'],
+                'satuanKapasitas'   => $validatedData['satuanKapasitas'],
+                'speed'             => $validatedData['speed'],
+                'satuanSpeed'       => $validatedData['satuanSpeed'],
+                'jumlahOperator'    => $validatedData['jumlahOperator'],
+                'keterangan'        => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi'  => $validatedData['link_kualifikasi'] ?? null,
+                'image'             => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->sync($request->proses_ids);

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kodeMesin')->unique();
             $table->string('name');
-            $table->string('kapasitas')->nullable();
-            $table->string('speed')->nullable();
+            $table->string('kapasitas');
+            $table->string('satuanKapasitas');
+            $table->string('speed');
+            $table->string('satuanSpeed');
             $table->integer('jumlahOperator')->default(2);
             $table->text('keterangan')->nullable();
             $table->string('link_kualifikasi')->nullable();

@@ -255,8 +255,8 @@
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
-                                <select class="form-control form-select w-25" id="kapasitas" name="kapasitas" required>
-                                    <option value="">Satuan</option>
+                                <select class="form-control form-select w-25" id="satuanKapasitas" name="satuanKapasitas" required>
+                                    <option value="" disabled selected>Satuan</option>
                                     <option value="Kilogram">Kilogram</option>
                                     <option value="Liter">Liter</option>
                                 </select>
@@ -268,8 +268,8 @@
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
-                                <select class="form-control form-select w-25" id="speed" name="speed" required>
-                                    <option value="">Satuan</option>
+                                <select class="form-control form-select w-25" id="satuanSpeed" name="satuanSpeed" required>
+                                    <option value="" disabled selected>Satuan</option>
                                     <option value="Batch/menit">Batch/menit</option>
                                     <option value="Blister/menit">Blister/menit</option>
                                     <option value="Botol/menit">Botol/menit</option>
@@ -391,8 +391,12 @@
                         <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
-                                <span class="input-group-text">Liter</span>
+                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
+                                <select class="form-control form-select w-25" id="satuanKapasitas" name="satuanKapasitas" required>
+                                    <option value="" disabled selected>Satuan</option>
+                                    <option value="Kilogram">Kilogram</option>
+                                    <option value="Liter">Liter</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -400,8 +404,19 @@
                         <label for="speed" class="col-sm-4 col-form-label">Speed</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
-                                <span class="input-group-text">RPM</span>
+                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
+                                <select class="form-control form-select w-25" id="satuanSpeed" name="satuanSpeed" required>
+                                    <option value="" disabled selected>Satuan</option>
+                                    <option value="Batch/menit">Batch/menit</option>
+                                    <option value="Blister/menit">Blister/menit</option>
+                                    <option value="Botol/menit">Botol/menit</option>
+                                    <option value="Box/menit">Box/menit</option>
+                                    <option value="Cap/menit">Cap/menit</option>
+                                    <option value="Lot/menit">Lot/menit</option>
+                                    <option value="Strip/menit">Strip/menit</option>
+                                    <option value="Tab/menit">Tab/menit</option>
+                                    <option value="Tub/menit">Tub/menit</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -444,7 +459,9 @@
                 $('#kodeMesin').val(mesin.kodeMesin);
                 $('#name').val(mesin.name);
                 $('#kapasitas').val(mesin.kapasitas);
+                $('#satuanKapasitas').val(mesin.satuanKapasitas);
                 $('#speed').val(mesin.speed);
+                $('#satuanSpeed').val(mesin.satuanSpeed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
                 $('#keterangan').val(mesin.keterangan);
                 $('#link_kualifikasi').val(mesin.link_kualifikasi);
@@ -546,8 +563,8 @@
                             <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
                             <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
                             <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
-                            <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
-                            <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas} ${mesin.satuanKapasitas}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr>
                                 <th>Link Kualifikasi</th>

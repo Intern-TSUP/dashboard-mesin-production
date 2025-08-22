@@ -134,8 +134,8 @@
                         </td>
                         <td>{{ strtoupper($item->kodeMesin) }}</td>
                         <td>{{ strtoupper($item->name) }}</td>
-                        <td>{{ $item->kapasitas ? $item->kapasitas . ' Liter' : 'N/A' }}</td>
-                        <td>{{ $item->speed ? $item->speed . ' RPM' : 'N/A' }}</td>
+                        <td>{{ $item->kapasitas . ' ' . $item->satuanKapasitas }}</td>
+                        <td>{{ $item->speed . ' ' . $item->satuanSpeed }}</td>
                         <td>{{ $item->jumlahOperator . ' Operator' }}</td>
                         <td>{{ $item->keterangan ?? 'N/A' }}</td>
                     </tr>

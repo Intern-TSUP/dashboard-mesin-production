@@ -31,7 +31,9 @@ class MesinSeeder extends Seeder
             [
                 'name' => 'Servolift',
                 'kapasitas' => 'Max. 150kg, 50L-400L',
+                'satuanKapasitas' => 'Kilogram',
                 'speed' => '5-20 rpm',
+                'satuanSpeed' => 'Box/menit',
                 'line_id' => $line1->id,
                 'inupby' => 'tsup@kalbe.co.id',
             ]
@@ -42,6 +44,9 @@ class MesinSeeder extends Seeder
             [
                 'name' => 'IBC Servolift',
                 'kapasitas' => '800L',
+                'satuanKapasitas' => 'Kilogram',
+                'speed' => '5-20 rpm',
+                'satuanSpeed' => 'Box/menit',
                 'line_id' => $line1->id,
                 'inupby' => 'tsup@kalbe.co.id'
             ]
@@ -51,7 +56,10 @@ class MesinSeeder extends Seeder
             ['kodeMesin' => 'M003'],
             [
                 'name' => 'HDGC 100 (Huttlin)',
-                'kapasitas' => 'Max. 100kg, Max. 250L, Max. Air flow 2000 m3/jam',
+                'kapasitas' => 'Max. 100kg',
+                'satuanKapasitas' => 'Kilogram',
+                'speed' => '5-20 rpm',
+                'satuanSpeed' => 'Box/menit',
                 'line_id' => $line2->id,
                 'inupby' => 'tsup@kalbe.co.id'
             ]
@@ -61,7 +69,10 @@ class MesinSeeder extends Seeder
             ['kodeMesin' => 'M004'],
             [
                 'name' => 'M0801 Quadrocomill U-20 (1)',
-                'speed' => '450-2700 rpm',
+                'kapasitas' => 'Max. 150kg, 50L-400L',
+                'satuanKapasitas' => 'Kilogram',
+                'speed' => '5-20 rpm',
+                'satuanSpeed' => 'Box/menit',
                 'line_id' => $line3->id,
                 'inupby' => 'tsup@kalbe.co.id'
             ]

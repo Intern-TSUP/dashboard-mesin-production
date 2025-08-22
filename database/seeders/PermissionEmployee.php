@@ -21,31 +21,33 @@ class PermissionEmployee extends Seeder
         foreach ($role as $item) {
             foreach ($routes as $routeName => $route) {
                 // Cek apakah route memiliki prefix "v1"
-                if (str_starts_with($route->getPrefix(), 'v1.dashboard')) {
+                if ($route->getName() && str_starts_with($route->getName(), 'v1.dashboard')) {
+                    
+                    // Pastikan variabel $routeName diisi dengan nama rute
+                    $routeName = $route->getName(); 
+
                     // Simpan routeName dan URL ke tabel permissions
                     Permissions::create([
                         'url' => $routeName, // Menggunakan nama rute sebagai identifikasi
-                        'role_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                        'role_id' => $item->id 
                     ]);
-                }   
+                }
+
+                if ($route->getName() && str_starts_with($route->getName(), 'v1.auditTrail')) {
+                    
+                    // Pastikan variabel $routeName diisi dengan nama rute
+                    $routeName = $route->getName(); 
+
+                    // Simpan routeName dan URL ke tabel permissions
+                    Permissions::create([
+                        'url' => $routeName, // Menggunakan nama rute sebagai identifikasi
+                        'role_id' => $item->id 
+                    ]);
+                }
             }
-            Permissions::create([
-                'url' => 'v1.dashboard', // Menggunakan nama rute sebagai identifikasi
-                'role_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
-            ]);
 
             Permissions::create([
-                'url' => 'v1.detail', // Menggunakan nama rute sebagai identifikasi
-                'role_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
-            ]);
-
-            Permissions::create([
-                'url' => 'v1.auditTrail', // Menggunakan nama rute sebagai identifikasi
-                'role_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
-            ]);
-
-            Permissions::create([
-                'url' => 'v1.contactUs', // Menggunakan nama rute sebagai identifikasi
+                'url' => 'v1.contactUs.index', // Menggunakan nama rute sebagai identifikasi
                 'role_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
             ]);
         }
