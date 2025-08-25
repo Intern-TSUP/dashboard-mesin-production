@@ -1,4 +1,7 @@
 @extends('layout.auth')
+@section('title')
+    Login
+@endsection
 @section('content')
     <!--begin::Wrapper-->
     <div class="d-flex flex-center flex-column flex-column-fluid pb-10 pb-lg-15">

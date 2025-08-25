@@ -251,7 +251,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
+                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
@@ -264,7 +264,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="speed" class="col-sm-4 col-form-label">Speed</label>
+                        <label for="speed" class="col-sm-4 col-form-label">Speed<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
@@ -388,7 +388,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
+                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
@@ -401,7 +401,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="speed" class="col-sm-4 col-form-label">Speed</label>
+                        <label for="speed" class="col-sm-4 col-form-label">Speed<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>

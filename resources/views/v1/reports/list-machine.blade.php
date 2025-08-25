@@ -10,31 +10,21 @@
             margin: 10px;
         }
 
-        /* Menghapus margin dan padding pada body agar konten menempel ke pinggir kertas */
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
             margin: 0 !important;
-            /* Menghapus margin */
             padding: 0;
-            /* Menghapus padding */
             height: 100%;
-            /* Agar konten mengisi seluruh halaman */
         }
 
-        /* Membungkus seluruh konten dengan garis tepi */
         .container {
             border: 1px solid black;
-            /* Garis tepi */
             height: 100%;
-            /* Mengisi seluruh halaman */
             padding: 10px;
-            /* Menghilangkan padding */
             box-sizing: border-box;
-            /* Agar padding dan border tidak mempengaruhi ukuran */
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -42,14 +32,12 @@
 
         .header img {
             height: 70px;
-            /* Ukuran logo */
         }
 
         .header h2 {
             margin: 0;
         }
 
-        /* Sub-header */
         .sub-header {
             text-align: center;
             font-size: 14px;
@@ -57,19 +45,16 @@
             margin-top: -20px;
         }
 
-        /* Footer */
         .footer {
             font-size: 10px;
             text-align: right;
             margin-top: 20px;
         }
 
-        /* Tabel */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 0;
-            /* Menghilangkan margin pada tabel */
         }
 
         th,

@@ -475,7 +475,6 @@
                         return;
                     }
 
-                    // Jika response adalah Blob (PDF), lanjutkan proses download
                     let filename = "ListMachine.pdf";
                     let disposition = xhr.getResponseHeader('Content-Disposition');
                     if (disposition && disposition.includes('filename=')) {

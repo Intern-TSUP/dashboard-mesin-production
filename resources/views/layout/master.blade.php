@@ -3,7 +3,7 @@
 <!--begin::Head-->
 <head>
     <base href=""/>
-    <title>@yield('title') - {{ env('APP_NAME') }}</title>
+    <title>@yield('title') - PT Kalbe Farma, Tbk.</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Formulir Monitoring Ruangan. Pantau Kondisi Suhu, RH, DP">
