@@ -352,7 +352,7 @@
                         <div class="row align-items-center mb-3">
                             <label class="col-sm-4 col-form-label">Current Image</label>
                             <div class="col-sm-8">
-                                <img src="{{ asset('storage') }}/${mesin.image}" alt="${mesin   .name}" class="img-fluid mb-2" style="max-height: 200px; max-width: 100%;">
+                                <img src="{{ asset('storage') }}/${mesin.image}" alt="${mesin.name}" class="img-fluid mb-2" style="max-height: 200px; max-width: 100%;">
                             </div>
                         </div>
                     `;

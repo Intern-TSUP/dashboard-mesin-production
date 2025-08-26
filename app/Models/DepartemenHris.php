@@ -11,4 +11,9 @@ class DepartemenHris extends Model
     use HasFactory, UUIDAsPrimaryKey;
 
     protected $guarded;
+
+    public function lines()
+    {
+        return $this->hasMany(Line::class, 'empOrg', 'EmpOrg');
+    }
 }

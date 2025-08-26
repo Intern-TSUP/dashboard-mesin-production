@@ -25,6 +25,7 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
     Route::prefix('line')->name('line.')->group(function () {
         Route::get('', [App\Http\Controllers\V1\LineController::class, 'index'])->name('index');
         Route::get('getDataTableLine', [App\Http\Controllers\V1\LineController::class, 'getDataTableLine'])->name('getDataTableLine');
+        Route::get('create', [App\Http\Controllers\V1\LineController::class, 'create'])->name('create');
         Route::post('store', [App\Http\Controllers\V1\LineController::class, 'store'])->name('store');
         Route::get('edit/{id}', [App\Http\Controllers\V1\LineController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [App\Http\Controllers\V1\LineController::class, 'update'])->name('update');

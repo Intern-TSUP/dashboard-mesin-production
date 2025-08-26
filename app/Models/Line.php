@@ -59,6 +59,11 @@ class Line extends Model
         return $this->hasMany(Mesin::class, 'line_id', 'id');
     }
 
+    public function departemen()
+    {
+        return $this->belongsTo(DepartemenHris::class, 'empOrg', 'EmpOrg');
+    }
+
     public function tanggalUpdate(): Attribute
     {
         return Attribute::make(

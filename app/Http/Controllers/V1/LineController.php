@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Line;
+use App\Models\DepartemenHris;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ class LineController extends Controller
     public function getDataTableLine(Request $request)
     {
         if ($request->ajax()) {
-            $query = Line::query()->latest()->get();
+            $query = Line::with('departemen');
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -39,10 +40,21 @@ class LineController extends Controller
         }
     }
 
+    public function  create()
+    {
+        $all_departemen = DepartemenHris::where('OrgName', 'LIKE', '%CKR - Production Minicompany%')
+            ->orderBy('OrgName', 'asc')
+            ->get();
+        return response()->json([
+            'all_departemen' => $all_departemen,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $line = $request->validate([
-            'name'        => 'required|string|unique:lines,name|max:255',
+            'empOrg'    => 'required|string',
+            'name'      => 'required|string|unique:lines,name|max:255'
         ]);
 
         try {
@@ -72,14 +84,21 @@ class LineController extends Controller
 
     public function edit($id)
     {
-        $lineData = Line::findOrFail($id);
-        return response()->json($lineData);
+        $all_departemen = DepartemenHris::where('OrgName', 'LIKE', '%CKR - Production Minicompany%')
+            ->orderBy('OrgName', 'asc')
+            ->get();
+        $lineData = Line::with('departemen')->findOrFail($id);
+        return response()->json([
+            'all_departemen'    => $all_departemen,
+            'lineData'          => $lineData
+        ]);
     }
 
     public function update(Request $request, $id)
     {
        $lineData = $request->validate([
-            'name' => 'required|string|unique:lines,name,' . $id . '|max:255',
+            'empOrg'    => 'required|string',
+            'name'      => 'required|string|unique:lines,name,' . $id . '|max:255',
         ]);
 
         try {

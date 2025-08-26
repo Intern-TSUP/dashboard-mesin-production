@@ -56,6 +56,18 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label for="empOrg" class="form-label">Org Name</label>
+                                        </div>
+                                        <select class="form-control form-select" id="empOrg" name="empOrg" required>
+                                            <option value="{{ $line->departemen->EmpOrg}}">{{ $line->departemen->OrgName }}</option>
+                                            @foreach ($all_departemen as $departemen)
+                                                <option value="{{ $departemen->EmpOrg }}">{{ $departemen->OrgName }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label class="form-label fw-bold">Select URLs</label>
                                         <div class="row">
                                             @foreach ($routes as $routeName => $route)

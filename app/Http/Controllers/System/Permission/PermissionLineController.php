@@ -4,6 +4,7 @@ namespace App\Http\Controllers\System\Permission;
 
 use App\Http\Controllers\Controller;
 use App\Models\PermissionsLine;
+use App\Models\DepartemenHris;
 use App\Models\Line;
 use App\Models\User;
 use DB;
@@ -59,21 +60,26 @@ class PermissionLineController extends Controller
     public function create()
     {
         $routes = Route::getRoutes()->getRoutesByName();
-        return view('admin.line.create', compact('routes'));
+        $all_departemen = DepartemenHris::where('OrgName', 'LIKE', '%CKR - Production Minicompany%')
+            ->orderBy('OrgName', 'asc')
+            ->get();
+        return view('admin.line.create', compact('routes', 'all_departemen'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'urls' => 'required|array',
-            'name' => 'required|string|unique:lines,name|max:255',
+            'urls'      => 'required|array',
+            'name'      => 'required|string|unique:lines,name|max:255',
+            'empOrg'    => 'required|string'
         ]);
 
         try {
             DB::beginTransaction();
 
             $line = Line::create([
-                'name' => $request->name
+                'name'      => $request->name,
+                'empOrg'    => $request->empOrg
             ]);
 
             // Perbarui izin berdasarkan URL yang dipilih
@@ -106,15 +112,20 @@ class PermissionLineController extends Controller
     }
     public function edit($id)
     {
-        $line = Line::with('permission')->find($id);
-
+        $line = Line::with('permission', 'departemen')->find($id);
+        $all_departemen = DepartemenHris::where('OrgName', 'LIKE', '%CKR - Production Minicompany%')
+            ->orderBy('OrgName', 'asc')
+            ->get();
         $routes = Route::getRoutes()->getRoutesByName();
-        return view('admin.line.edit', compact('line', 'routes'));
+        return view('admin.line.edit', compact('line', 'routes', 'all_departemen'));
     }
     public function update(Request $request, $id)
     {
         $line = Line::findOrFail($id);
-        $line->update(['name' => $request->line_id]);
+        $line->update([
+            'name'      => $request->line_id,
+            'empOrg'    => $request->empOrg
+        ]);
 
         // Hapus permissions lama jika ada
         $line->permission()->delete();

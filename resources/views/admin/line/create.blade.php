@@ -52,7 +52,18 @@
                                                 <label class="form-check-label" for="checkAll">Check All</label>
                                             </div>
                                         </div>
-                                        <input type="text" name="name" class="form-control" required>
+                                        <input type="text" name="name" class="form-control" placeholder="Masukkan nama line" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label for="empOrg" class="form-label">Org Name</label>
+                                        </div>
+                                        <select class="form-control form-select" id="empOrg" name="empOrg" required>
+                                            <option value="" disabled selected>-- Select Departemen --</option>
+                                            @foreach ($all_departemen as $departemen)
+                                                <option value="{{ $departemen->EmpOrg }}">{{ $departemen->OrgName }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
                                     <div class="mb-3">

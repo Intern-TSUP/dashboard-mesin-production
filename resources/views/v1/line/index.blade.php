@@ -60,6 +60,7 @@
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                     <th style="width: 50px;">NO</th>
+                                    <th>Org Name</th>
                                     <th>Nama Line</th>
                                     <th>Updated_at</th>
                                     <th>Inupby</th>
@@ -71,7 +72,7 @@
                         <!--begin::modal line-->
                         <div class="modal fade" tabindex="-1" id="modalLine">
                             <form id="formLine">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title" id="titleModalLine"></h3>
@@ -129,7 +130,7 @@
             }, 1000); // Adjust the timeout duration as needed
 
             let DT = $("#dt_line").DataTable({
-                order: [[1, 'asc']], // Default order by the second column (name)
+                order: [[2, 'asc']], // Default order by the second column (name)
                 processing: false,
                 serverSide: true,
                 ajax: {
@@ -137,6 +138,7 @@
                 },
                 columns: [
                     { data: "DT_RowIndex" },
+                    { data: "departemen.OrgName", name:"departemen.OrgName"},
                     { data: "name" },
                     { data: "updated_at", name: "updated_at", orderable: true, searchable: true },
                     { data: "inupby", name: "inupby", orderable: true, searchable: true },
@@ -173,16 +175,37 @@
             $('#formLine').attr('action', "{{ route('v1.line.store') }}");
             $('#formLine').attr('method', 'POST');
 
-            $('#bodyModalLine').html(`
-                <div class="row align-items-center mb-3">
-                    <label for="name" class="col-sm-4 col-form-label">Nama Line <span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                </div>
-            `);
+            $.get("{{ route('v1.line.create') }}", function(response) {
+                let departemenOptions='<option></option>';
+                response.all_departemen.forEach(function(departemen) {
+                    departemenOptions += `<option value="${departemen.EmpOrg}">${departemen.OrgName}</option>`;
+                });
 
-            $('#modalLine').modal('show');
+                $('#bodyModalLine').html(`
+                    <div class="row align-items-center mb-3">
+                        <label for="empOrg" class="col-sm-4 col-form-label">Org Name <span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="empOrg" name="empOrg" required>
+                                ${departemenOptions}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="name" class="col-sm-4 col-form-label">Nama Line <span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama line" required>
+                        </div>
+                    </div>
+                `);
+
+                $('#empOrg').select2({
+                    dropdownParent: $('#modalLine'), // agar tampilan dropdown lebih baik
+                    placeholder: '-- Select Departemen --'
+                });
+
+                $('#modalLine').modal('show');
+            });
+            
         }
 
         function editRuang(id) {
@@ -197,21 +220,50 @@
 
             $('#formLine').append('<input type="hidden" name="_method" value="PUT">');
 
-            $('#bodyModalLine').html(`
-                <input type="hidden" name="id" id="id">
-                <div class="row align-items-center mb-3">
-                    <label for="name" class="col-sm-4 form-label">Nama Line <span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                </div>
-            `);
-
             // Ambil data dari server untuk diisikan ke form
             let url = `{{ url('v1/line/edit') }}/${id}`;
             $.get(url, function (response) {
-                $('#name').val(response.name);
+                let line = response.lineData;
+                let allDepartemen = response.all_departemen;
+
+                $('#bodyModalLine').html(`
+                    <input type="hidden" name="id" id="id">
+                    <div class="row align-items-center mb-3">
+                        <label for="empOrg" class="col-sm-4 col-form-label">Emp Org <span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="empOrg" name="empOrg" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="name" class="col-sm-4 form-label">Nama Line <span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                `);
+
+                $('#name').val(line.name);
+
+                let departemenSelect = $('#empOrg');
+                departemenSelect.empty();
+
+                departemenSelect.append('<option></option>');
+
+                let selectedDepartemen = line.departemen.EmpOrg;
+                allDepartemen.forEach(function(departemen) {
+                    let isSelected = (departemen.EmpOrg === selectedDepartemen);
+                    departemenSelect.append(`<option value="${departemen.EmpOrg}" ${isSelected ? 'selected' : ''}>${departemen.OrgName}</option>`);
+                })
+
+                $('#empOrg').select2({
+                    dropdownParent: $('#modalLine')
+                });
+
                 $('#modalLine').modal('show');
+
+            }).fail(function() {
+                $('#bodyModalLine').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
 
