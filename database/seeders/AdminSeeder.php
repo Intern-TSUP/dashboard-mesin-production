@@ -35,6 +35,7 @@ class AdminSeeder extends Seeder
             'email' => 'tsup@kalbe.co.id',
             'jobLvl' => 'Administrator',
             'jobTitle' => 'Administrator',
+            'deptKode' => '010701010601001002050000',
             'groupName' => 'Cikarang',
             'groupKode' => 'KF.9999',
             'password' => Hash::make('123')
@@ -48,6 +49,7 @@ class AdminSeeder extends Seeder
             'email' => 'supervisor@kalbe.co.id',
             'jobLvl' => 'Administrator',
             'jobTitle' => 'Administrator',
+            'deptKode' => '010701010601001002050000',
             'groupName' => 'Cikarang',
             'groupKode' => 'KF.9999',
             'password' => Hash::make('123')
@@ -61,6 +63,7 @@ class AdminSeeder extends Seeder
             'email' => 'haloworld@gmail.com',
             'jobLvl' => 'Operator',
             'jobTitle' => 'Operator',
+            'deptKode' => '010701010601001002050000',
             'groupName' => 'Jakarta',
             'groupKode' => 'KF.9999',
             'password' => Hash::make('123')

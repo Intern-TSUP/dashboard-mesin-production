@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->belongsTo(Roles::class, 'jobLvl', 'name');
     }
 
+    // public function departemen()
+    // {
+    //     return $this->belongsTo(DepartemenHris::class, 'deptKode', 'EmpOrg');
+    // }
+
     public function profile()
     {
         return $this->hasOne(UserProfile::class, 'user_id');

@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             MesinProsesSeeder::class,
             GroupSeeder::class,
             AdminSeeder::class,
-            UserProfileSeeder::class
+            UserProfileSeeder::class,
+            EmpGroupSeeder::class
         ]);
     }
 }

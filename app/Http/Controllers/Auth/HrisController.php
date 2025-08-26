@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Line;
 use App\Services\System\LogActivityService;
 use Illuminate\Http\Request;
 use Log;
@@ -43,73 +44,52 @@ class HrisController extends Controller
             }
         } 
         
-        // else if (!empty($user) && ($user->jobLvl == 'SUPERVISOR' || $user->jobLvl == 'SENIOR SUPERVISOR')) {
-        //      $this->getAccount($data, $request);
+        else if (!empty($user) && ($user->jobLvl == 'SUPERVISOR' || $user->jobLvl == 'SENIOR SUPERVISOR')) {
+            $data = $this->hris($request);
 
-        //     if (\Auth::attempt($kredensil)) {
-        //         $data = json_decode(auth()->user()->result, true);
+            if (empty($data['accessToken'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $data ?? 'Response Not Found',
+                    'redirect' => route('login'),
+                ]);
+            }
+            
+            $this->getAccount($data, $request);
+
+            if (\Auth::attempt($kredensil)) {
+                $data = json_decode(auth()->user()->result, true);
                 
-        //         if ($data['EmpOrg']=='') {  //line 1
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 2
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 3
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 4
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 5
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 6
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 7
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         } else if ($data['EmpOrg']=='010701010601001002050000') { //line 8
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '010701010601001002050000']
-        //             );
-        //         } else if ($data['EmpOrg']=='') { //line 9
-        //             $user->profile()->updateOrCreate(
-        //                 ['user_id' => $user->id],
-        //                 ['line_id' => '']
-        //             );
-        //         }
+                $lineMapping = Line::pluck('id', 'empOrg')->all();
 
-        //         (new LogActivityService())->handle([
-        //             'perusahaan' => strtoupper($data['CompName']),
-        //             'user' => strtoupper($request->email),
-        //             'tindakan' => 'Login',
-        //             'catatan' => 'Berhasil Login Account',
-        //         ]);
+                $empOrgCode = $data['EmpOrg'] ?? null;
+                $lineId = null;
 
-        //         return response()->json([
-        //             'success' => true,
-        //             'message' => 'Login Berhasil, Selamat Datang di '.env('APP_NAME'),
-        //             'redirect' => route('v1.dashboard'),
-        //         ]);
-        //     }
-        // } 
+                if ($empOrgCode && array_key_exists($empOrgCode, $lineMapping)) {
+                    // Jika kode HRIS ditemukan, ambil UUID yang sesuai
+                    $lineId = $lineMapping[$empOrgCode];
+                }
+
+                // Lanjutkan dengan updateOrCreate
+                $user->profile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['line_id' => $lineId] // $lineId sekarang berisi UUID atau null
+                );
+
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper($request->email),
+                    'tindakan' => 'Login',
+                    'catatan' => 'Berhasil Login Account',
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login Berhasil, Selamat Datang di '.env('APP_NAME'),
+                    'redirect' => route('v1.dashboard'),
+                ]);
+            }
+        } 
         
         else {
             $data = $this->hris($request);
@@ -205,6 +185,7 @@ class HrisController extends Controller
                     'email_backup' => $request['Email'],
                     'jobLvl' => $role,
                     'jobTitle' => $response['JobTtlName'],
+                    'deptKode' => $response['EmpOrg'],
                     'groupName' => $response['DivName'],
                     'groupKode' => $response['DivCode'],
                     'password' => \Hash::make($request->password),
@@ -221,6 +202,7 @@ class HrisController extends Controller
                     'email_backup' => $request['Email'],
                     'jobLvl' => $role,
                     'jobTitle' => $response['JobTtlName'],
+                    'deptKode' => $response['EmpOrg'],
                     'groupName' => $response['DivName'],
                     'groupKode' => $response['DivCode'],
                     'password' => \Hash::make($request->password),
