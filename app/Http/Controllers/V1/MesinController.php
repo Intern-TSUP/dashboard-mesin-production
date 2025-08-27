@@ -152,12 +152,22 @@ class MesinController extends Controller
             $mesin->proses()->attach($request->proses_ids);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Tambah Mesin',
-                'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Mesin',
+                    'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Mesin',
+                    'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
+                ]);
+            }
             
             return response()->json([
                 'success' => true,
@@ -245,12 +255,22 @@ class MesinController extends Controller
             $mesin->proses()->sync($request->proses_ids);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Edit Mesin',
-                'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -280,12 +300,22 @@ class MesinController extends Controller
             $mesin->delete();
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Hapus Mesin',
-                'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Delete Mesin',
+                    'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Delete Mesin',
+                    'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,

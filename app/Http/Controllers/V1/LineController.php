@@ -61,12 +61,22 @@ class LineController extends Controller
             Line::create($line);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Tambah Line',
-                'catatan' => 'Berhasil menambah ' . $line['name'],
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Line',
+                    'catatan' => 'Berhasil menambah ' . $line['name'],
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Line',
+                    'catatan' => 'Berhasil menambah ' . $line['name'],
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -106,12 +116,22 @@ class LineController extends Controller
             $line->update($lineData);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Edit Line',
-                'catatan' => 'Berhasil mengubah ' . $line->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => 'Berhasil mengubah ' . $line->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => 'Berhasil mengubah ' . $line->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -135,12 +155,22 @@ class LineController extends Controller
             $line->delete();
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Hapus Line',
-                'catatan' => 'Berhasil menghapus ' . $line->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Hapus Line',
+                    'catatan' => 'Berhasil menghapus ' . $line->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Hapus Line',
+                    'catatan' => 'Berhasil menghapus ' . $line->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,

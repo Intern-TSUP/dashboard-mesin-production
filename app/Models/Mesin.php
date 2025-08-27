@@ -50,6 +50,11 @@ class Mesin extends Model
         return $this->belongsTo(Line::class, 'line_id', 'id');
     }
 
+    public function departemen()
+    {
+        return $this->belongsTo(DepartemenHris::class, 'departement_id', 'id');
+    }
+
     public function tanggalUpdate(): Attribute
     {
         return Attribute::make(

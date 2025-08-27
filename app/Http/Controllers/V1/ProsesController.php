@@ -49,12 +49,22 @@ class ProsesController extends Controller
             Proses::create($proses);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Tambah Proses',
-                'catatan' => 'Berhasil menambah data proses ' . $proses['name'],
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Proses',
+                    'catatan' => 'Berhasil menambah data proses ' . $proses['name'],
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Tambah Proses',
+                    'catatan' => 'Berhasil menambah data proses ' . $proses['name'],
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -87,12 +97,22 @@ class ProsesController extends Controller
             $proses->update($prosesData);
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Edit Proses',
-                'catatan' => 'Berhasil mengubah data proses ' . $proses->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Proses',
+                    'catatan' => 'Berhasil mengubah data proses ' . $proses->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Edit Proses',
+                    'catatan' => 'Berhasil mengubah data proses ' . $proses->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -115,12 +135,22 @@ class ProsesController extends Controller
             $proses->delete();
 
             $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Hapus Proses',
-                'catatan' => 'Berhasil menghapus data proses ' . $proses->name,
-            ]);
+            if($data) {
+                (new LogActivityService())->handle([
+                    'perusahaan' => strtoupper($data['CompName']),
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Hapus Proses',
+                    'catatan' => 'Berhasil menghapus data proses ' . $proses->name,
+                ]);
+            }
+            else {
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper(auth()->user()->email),
+                    'tindakan' => 'Hapus Proses',
+                    'catatan' => 'Berhasil menghapus data proses ' . $proses->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
