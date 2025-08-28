@@ -352,7 +352,7 @@
                         <div class="row align-items-center mb-3">
                             <label class="col-sm-4 col-form-label">Current Image</label>
                             <div class="col-sm-8">
-                                <img src="{{ asset('storage') }}/${mesin.image}" alt="${mesin.name}" class="img-fluid mb-2" style="max-height: 200px; max-width: 100%;">
+                                <img src="{{ asset('mesin_image') }}/${mesin.image}" alt="${mesin.name}" class="img-fluid mb-2" style="max-height: 200px; max-width: 100%;">
                             </div>
                         </div>
                     `;
@@ -534,7 +534,7 @@
 
                 let imageHtml = '<p class="text-muted">No image available</p>';
                 if (mesin.image) {
-                    let imageUrl = `{{ asset('storage') }}/${mesin.image}`;
+                    let imageUrl = `{{ asset('mesin_image') }}/${mesin.image}`;
                     imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
                 }
 

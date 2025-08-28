@@ -56,6 +56,14 @@ return [
             'report' => false,
         ],
 
+        'mesin_images' => [ 
+        'driver'     => 'local', 
+        'root'       => public_path('mesin_image'),
+        'url'        => env('APP_URL').'/mesin_image',
+        'visibility' => 'public',
+        'throw'      => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
