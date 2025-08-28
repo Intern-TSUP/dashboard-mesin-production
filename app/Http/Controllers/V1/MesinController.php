@@ -139,7 +139,7 @@ class MesinController extends Controller
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
             $fileName = time() . '_' . $originalName;
-            $path = $file->storeAs('mesin_images', $fileName, 'public');
+            $path = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
         }
 
@@ -239,7 +239,7 @@ class MesinController extends Controller
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
             $fileName = time() . '_' . $originalName;
-            $path = $file->storeAs('mesin_images', $fileName, 'public');
+            $path = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
         }
         else {
@@ -303,7 +303,7 @@ class MesinController extends Controller
 
             // hapus image jika ada
             if ($mesin->image) {
-                Storage::disk('public')->delete($mesin->image);
+                Storage::disk('mesin_images')->delete($mesin->image);
             }
             
             $mesin->delete();
