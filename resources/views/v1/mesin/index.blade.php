@@ -52,8 +52,8 @@
                                 <label for="filterProses" class="form-label mx-2 mb-0">Proses:</label>
                                 <select id="filterProses" class="form-select form-select-sm w-150px">
                                     <option value="">Semua Proses</option>
-                                    @foreach ($all_proses as $proses)
-                                        <option value="{{ $proses->id }}">{{ $proses->name }}</option>
+                                    @foreach ($all_proses as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

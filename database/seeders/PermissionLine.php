@@ -24,22 +24,22 @@ class PermissionLine extends Seeder
                 if (str_starts_with($route->getPrefix(), 'v1')) {
                     // Simpan routeName dan URL ke tabel permissions
                     PermissionsLine::create([
-                        'url' => $routeName, // Menggunakan nama rute sebagai identifikasi
-                        'line_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                        'url' => $routeName,
+                        'line_id' => $item->id
                     ]);
                 }
             }
             PermissionsLine::create([
-                'url' => 'v1.dashboard', // Menggunakan nama rute sebagai identifikasi
-                'line_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                'url' => 'v1.dashboard',
+                'line_id' => $item->id
             ]);
             PermissionsLine::create([
-                'url' => 'v1.auditTrail', // Menggunakan nama rute sebagai identifikasi
-                'line_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                'url' => 'v1.auditTrail',
+                'line_id' => $item->id
             ]);
             PermissionsLine::create([
-                'url' => 'v1.contactUs', // Menggunakan nama rute sebagai identifikasi
-                'line_id' => $item->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                'url' => 'v1.contactUs',
+                'line_id' => $item->id
             ]);
         }
     }

@@ -22,11 +22,6 @@ class AdminSeeder extends Seeder
             // 'slug_name' => 'administrator',
         ]);
 
-        // Menentukan role Operator
-        $operatorRole = Roles::firstOrCreate([
-            'name' => 'Operator',
-        ]);
-
         // Menambahkan user Administrator
         User::create([
             'employeId' => '000000000',
@@ -41,34 +36,6 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('123')
         ]);
 
-        // Menambahkan user SUPERVISOR
-        User::create([
-            'employeId' => '000000001',
-            'empTypeGroup' => 'PKWTT',
-            'fullname' => 'SuperVisor',
-            'email' => 'supervisor@kalbe.co.id',
-            'jobLvl' => 'Administrator',
-            'jobTitle' => 'Administrator',
-            'deptKode' => '010701010601001002050000',
-            'groupName' => 'Cikarang',
-            'groupKode' => 'KF.9999',
-            'password' => Hash::make('123')
-        ]);
-
-        // Menambahkan user haloworld
-        User::create([
-            'employeId' => '000000002',
-            'empTypeGroup' => 'PKWTT',
-            'fullname' => 'Halo World',
-            'email' => 'haloworld@gmail.com',
-            'jobLvl' => 'Operator',
-            'jobTitle' => 'Operator',
-            'deptKode' => '010701010601001002050000',
-            'groupName' => 'Jakarta',
-            'groupKode' => 'KF.9999',
-            'password' => Hash::make('123')
-        ]);
-
         $routes = Route::getRoutes()->getRoutesByName();
 
         foreach ($routes as $routeName => $route) {
@@ -78,30 +45,5 @@ class AdminSeeder extends Seeder
                 'role_id' => $adminRole->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
             ]);
         }
-
-        foreach ($routes as $routeName => $route) {
-            // Simpan routeName dan URL ke tabel permissions
-            Permissions::create([
-                'url' => $routeName, // Menggunakan nama rute sebagai identifikasi
-                'role_id' => $operatorRole->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
-            ]);
-        }
-
-        // Menambahkan permissions untuk role SUPERVISOR
-        // $permissions = [
-        //     'login',
-        //     'logout',
-        //     'v1.dashboard.index',
-        //     'v1.proses.index',
-        //     'v1.proses.store',
-        //     'v1.proses.edit',
-        //     'v1.proses.update',
-        //     'v1.proses.destroy',
-        //     'v1.line.index',
-        //     'v1.line.store',
-        //     'v1.line.edit',
-        //     'v1.line.update',
-        //     'v1.line.destroy',
-        // ];
     }
 }

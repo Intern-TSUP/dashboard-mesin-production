@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/login');
 
 //tester tanpa koneksi kalbe (untuk sementara)
-Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->name('loginHris'); 
+// Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+// Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->name('loginHris'); 
 
-// Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->middleware('NetworkTesting')->name('login');
-// Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->middleware('NetworkTesting')->name('loginHris');
+Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->middleware('NetworkTesting')->name('login');
+Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->middleware('NetworkTesting')->name('loginHris');
 
 Route::get('/logout', [App\Http\Controllers\Auth\HrisController::class, 'logout'])->name('logout');
 

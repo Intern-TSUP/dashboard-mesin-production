@@ -55,14 +55,6 @@ class DashboardController extends Controller
 
         $data = $query->orderBy('line_id', 'desc')->get();
 
-        // Jika tidak ada data, kembalikan respons JSON
-        if ($data->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tidak ada data untuk tanggal yang dipilih.'
-            ], 404);
-        }
-
         $line_name = $filter_lines ? Line::find($filter_lines)->name : 'Semua Line';
         $proses_name = $filter_proses ? Proses::find($filter_proses)->name : 'Semua Proses';
         $printedFromUrl = url()->previous();

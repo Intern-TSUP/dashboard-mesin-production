@@ -16,16 +16,6 @@ class MesinSeeder extends Seeder
         //     'inupby' => 'tsup@kalbe.co.id',
         // ]);
 
-        // $line2 = Line::firstOrCreate([
-        //     'name' => 'Line 2',
-        //     'inupby' => 'tsup@kalbe.co.id'
-        // ]);
-
-        // $line3 = Line::firstOrCreate([
-        //     'name' => 'Line 3',
-        //     'inupby' => 'tsup@kalbe.co.id'
-        // ]);
-
         // Mesin::updateOrCreate(
         //     ['kodeMesin' => 'M001'],
         //     [
@@ -36,45 +26,6 @@ class MesinSeeder extends Seeder
         //         'satuanSpeed' => 'Box/menit',
         //         'line_id' => $line1->id,
         //         'inupby' => 'tsup@kalbe.co.id',
-        //     ]
-        // );
-
-        // Mesin::updateOrCreate(
-        //     ['kodeMesin' => 'M002'],
-        //     [
-        //         'name' => 'IBC Servolift',
-        //         'kapasitas' => '800L',
-        //         'satuanKapasitas' => 'Kilogram',
-        //         'speed' => '5-20 rpm',
-        //         'satuanSpeed' => 'Box/menit',
-        //         'line_id' => $line1->id,
-        //         'inupby' => 'tsup@kalbe.co.id'
-        //     ]
-        // );
-
-        // Mesin::updateOrCreate(
-        //     ['kodeMesin' => 'M003'],
-        //     [
-        //         'name' => 'HDGC 100 (Huttlin)',
-        //         'kapasitas' => 'Max. 100kg',
-        //         'satuanKapasitas' => 'Kilogram',
-        //         'speed' => '5-20 rpm',
-        //         'satuanSpeed' => 'Box/menit',
-        //         'line_id' => $line2->id,
-        //         'inupby' => 'tsup@kalbe.co.id'
-        //     ]
-        // );
-
-        // Mesin::updateOrCreate(
-        //     ['kodeMesin' => 'M004'],
-        //     [
-        //         'name' => 'M0801 Quadrocomill U-20 (1)',
-        //         'kapasitas' => 'Max. 150kg, 50L-400L',
-        //         'satuanKapasitas' => 'Kilogram',
-        //         'speed' => '5-20 rpm',
-        //         'satuanSpeed' => 'Box/menit',
-        //         'line_id' => $line3->id,
-        //         'inupby' => 'tsup@kalbe.co.id'
         //     ]
         // );
     }

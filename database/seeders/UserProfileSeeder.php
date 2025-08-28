@@ -16,19 +16,18 @@ class UserProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Cari user yang ingin dihubungkan
-        $supervisor = User::where('jobLvl', 'Operator')->first();
+        // // 1. Cari user yang ingin dihubungkan
+        // $supervisor = User::where('jobLvl', 'Operator')->first();
 
-        // 2. Cari line yang akan dihubungkan
-        $line8 = Line::where('name', 'Line 8')->first();
+        // // 2. Cari line yang akan dihubungkan
+        // $line8 = Line::where('name', 'Line 8')->first();
 
-        // 3. Pastikan keduanya ditemukan, baru buat relasinya
-        if ($supervisor && $line8) {
-            // Gunakan relasi 'profile()' yang sudah kita buat di model User
-            // untuk membuat entri baru di tabel 'user_profiles'.
-            $supervisor->profile()->create([
-                'line_id' => $line8->id,
-            ]);
-        }
+        // if ($supervisor && $line8) {
+        //     // Gunakan relasi 'profile()' yang sudah kita buat di model User
+        //     // untuk membuat entri baru di tabel 'user_profiles'.
+        //     $supervisor->profile()->create([
+        //         'line_id' => $line8->id,
+        //     ]);
+        // }
     }
 }

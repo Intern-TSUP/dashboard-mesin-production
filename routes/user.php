@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // untuk menghindari koneksi kalbe
-Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJobLvlPermission'])->group(function () {
+Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJobLvlPermission', 'NetworkTesting'])->group(function () {
     Route::get('', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {

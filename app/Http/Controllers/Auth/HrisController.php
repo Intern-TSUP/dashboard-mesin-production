@@ -279,7 +279,7 @@ class HrisController extends Controller
     {
         try {
             \DB::beginTransaction();
-            if (auth()->user()->jobLvl != 'Administrator') {
+            if (auth()->check() && auth()->user()->jobLvl != 'Administrator') {
                 $data = json_decode(auth()->user()->result, true);
                 (new LogActivityService())->handle([
                     'perusahaan' => strtoupper($data['CompName']),
