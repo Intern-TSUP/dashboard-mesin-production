@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="{{ asset('assets/logo/logo_only.png') }}" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    {{-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> --}}
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="{{ asset('assets/css/inter_font_api.css') }}" />
     <!--end::Fonts-->

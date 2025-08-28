@@ -9,7 +9,7 @@
     <meta name="description" content="Formulir Monitoring Ruangan. Pantau Kondisi Suhu, RH, DP">
     <meta name="keywords" content="Monitoring, TSUP, MSTD, Kalbe, Kalbe-Farma, OneKalbe">
     <meta name="author" content="Ferdy Rahmat">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    {{-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> --}}
     <link rel="shortcut icon" href="{{ asset('assets/logo/logo_only.png') }}" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="{{ asset('assets/css/inter_font_api.css') }}" />
