@@ -58,7 +58,16 @@ class MesinController extends Controller
                     })->implode(' ');
                 })
                 ->addColumn('line_name', function ($mesin) {
-                    return $mesin->line ? $mesin->line->name : '-';
+                    $fullLineName = $mesin->line->name;
+                    $pos = stripos($fullLineName, 'Line');
+                    $line ='';
+                    
+                    if ($pos !== false) {
+                        $line = substr($fullLineName, $pos);
+                    } else {
+                        $line = $fullLineName;
+                    }
+                    return $line;
                 })
                 ->addColumn('action', function ($row) {
                     $detailBtn = '<button class="btn btn-sm btn-icon btn-light-info me-2" onclick="showDetail(\'' . $row->id . '\')" title="View Details"><i class="ki-duotone ki-eye fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';

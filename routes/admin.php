@@ -34,13 +34,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
     });
 
     // subdepartment
-    Route::prefix('subdepartment')->name('subdept.')->group(function () {
-        Route::get('', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'index'])->name('index');
-        Route::get('dt_subdept', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'dt_subdept'])->name('dt_subdept');
-        Route::post('store', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'store'])->name('store');
-        Route::post('edit', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'edit'])->name('edit');
-        Route::post('update', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'update'])->name('update');
-        Route::post('destroy', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'destroy'])->name('destroy');
+    Route::prefix('department')->name('department.')->group(function () {
+        Route::get('', [App\Http\Controllers\System\Department\DepartmentController::class, 'index'])->name('index');
+        Route::get('getDataTableDepartment', [App\Http\Controllers\System\Department\DepartmentController::class, 'getDataTableDepartment'])->name('getDataTableDepartment');
     });
 
     // Setting

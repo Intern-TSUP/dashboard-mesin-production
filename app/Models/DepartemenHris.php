@@ -16,4 +16,14 @@ class DepartemenHris extends Model
     {
         return $this->hasMany(Line::class, 'empOrg', 'EmpOrg');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'deptKode', 'EmpOrg');
+    }
+
+    public function scopeIsLine($query)
+    {
+        return $query->where('OrgName', 'LIKE', '%CKR - Production Minicompany%');
+    }
 }

@@ -135,7 +135,7 @@ class MesinsExport implements
         $sheet->mergeCells('I6:J6'); 
 
         $sheet->getColumnDimension('A')->setWidth(5);
-        $sheet->getColumnDimension('B')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(40);
         $sheet->getColumnDimension('C')->setWidth(30);
         $sheet->getColumnDimension('D')->setWidth(25);
         $sheet->getColumnDimension('E')->setWidth(30);

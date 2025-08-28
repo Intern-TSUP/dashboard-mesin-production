@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            EmpGroupSeeder::class,
             RoleEmployee::class,
             PermissionEmployee::class,
             MaintenanceSeeder::class,
@@ -25,7 +26,6 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             AdminSeeder::class,
             UserProfileSeeder::class,
-            EmpGroupSeeder::class
         ]);
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('line_id')->nullable()->constrained('lines')->onDelete('set null');
+            // $table->foreignUuid('departement_id')->nullable()->constrained('departemen_hris')->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\System\LogActivityService;
 
-class PermissionLineController extends Controller
+class PermissionDepartmentController extends Controller
 {
     public function getDataTablePermission(Request $request)
     {
@@ -32,12 +32,14 @@ class PermissionLineController extends Controller
                     $addUserUrl = route('admin.permissionLine.createUser', $row->id);
 
                     $editBtn = '<a href="' . $editUrl . '" class="btn btn-sm btn-icon btn-light-warning me-2" title="Manage Access"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span></i></a>';
+                    
+                    $deleteBtn = '<button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')" title="Delete"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>';
 
                     $addUserBtn = '<a href="' . $addUserUrl . '" class="btn btn-sm btn-light-primary d-flex align-items-center" title="Add User to Line">' .
-                                '<i class="ki-duotone ki-user-add fs-2 me-1"></i> Add PIC' .
+                                '<i class="ki-duotone ki-user-add fs-2 me-1"></i> Add User' .
                                 '</a>';
 
-                    return '<div class="d-flex flex-row gap-2">' . $editBtn . $addUserBtn . '</div>';
+                    return '<div class="d-flex flex-row gap-2">' . $editBtn . $deleteBtn . $addUserBtn . '</div>';
                 })
                 ->editColumn('users_count', function ($row) {
                     return '<span class="badge badge-light-primary fs-7">' . $row->users_count . ' User</span>';
@@ -56,69 +58,7 @@ class PermissionLineController extends Controller
         return view('admin.line.index');
     }
 
-    public function create()
-    {
-        $routes = Route::getRoutes()->getRoutesByName();
-        $all_departemen = DepartemenHris::where('OrgName', 'LIKE', '%CKR - Production Minicompany%')
-            ->orderBy('OrgName', 'asc')
-            ->get();
-        return view('admin.line.create', compact('routes', 'all_departemen'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'urls'      => 'required|array',
-            'name'      => 'required|string|unique:lines,name|max:255',
-            'empOrg'    => 'required|string'
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $line = Line::create([
-                'name'      => $request->name,
-                'empOrg'    => $request->empOrg
-            ]);
-
-            // Perbarui izin berdasarkan URL yang dipilih
-            foreach ($request->input('urls', []) as $url) {
-                $line->permission()->create(['url' => $url]);
-            }
-
-            DB::commit();
-
-            $data = json_decode(auth()->user()->result, true);
-            if($data) {
-                (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Tambah Permission Line',
-                    'catatan' => 'Berhasil menambah permission ' . $line['name'],
-                ]);
-            }
-            else {
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Tambah Permission Line',
-                    'catatan' => 'Berhasil menambah permission ' . $line['name'],
-                ]);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Permission Line Has Been Created',
-                'redirect' => route('admin.permissionLine.index')
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'success' => false,
-                'message' => $th->getMessage(),
-            ]);
-        }
-    }
+    
     public function edit($id)
     {
         $line = Line::with('permission', 'departemen')->find($id);
@@ -128,6 +68,7 @@ class PermissionLineController extends Controller
         $routes = Route::getRoutes()->getRoutesByName();
         return view('admin.line.edit', compact('line', 'routes', 'all_departemen'));
     }
+
     public function update(Request $request, $id)
     {
         $line = Line::findOrFail($id);

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('link_kualifikasi')->nullable();
             $table->string('image')->nullable();
             $table->foreignUuid('line_id')->nullable()->constrained('lines')->onDelete('set null');
+            // $table->foreignId('departement_id')->nullable()->constrained('department_hris');
             $table->string('inupby');
             $table->timestamps();
             $table->softDeletes();

@@ -134,26 +134,6 @@
                                         @break
                                     @endif
                                 @endforeach
-                                
-                                @foreach ($relation as $item)
-                                    @if (Str::is('v1.line.index', $item->url))
-                                        {{-- Line --}}
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link {{ request()->is('v1/line') ? 'active' : '' }}" href="{{ route('v1.line.index') }}">
-                                            <span class="menu-icon">
-                                                <i class="ki-duotone ki-category fs-1">
-                                                    <span class="path1"></span>
-                                                    <span class="path2"></span>
-                                                    <span class="path3"></span>
-                                                    <span class="path4"></span>
-                                                </i>
-                                            </span>
-                                            <span class="menu-title fw-semibold">Line</span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                        @break
-                                    @endif
-                                @endforeach
 
                                 @foreach ($relation as $item)
                                     @if (Str::is('v1.proses.index', $item->url))

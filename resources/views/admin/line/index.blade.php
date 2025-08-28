@@ -38,17 +38,6 @@
         <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-fluid d-flex flex-column flex-column-fluid">
             <div class="card">
-                <div class="card-header">
-                    <div class="card-title"></div>
-                    <div class="card-toolbar">
-                        <a href="{{ route('admin.permissionLine.create') }}">
-                            <button class="btn btn-primary">
-                                <i class="ki-duotone ki-plus fs-2"></i>
-                                Add New
-                            </button>
-                        </a>
-                    </div>
-                </div>
                 <div class="card-body">
                     <div class="card-content">
                         <div class="d-flex align-items-center position-relative my-5">

@@ -31,4 +31,9 @@ class UserProfile extends Model
     {
         return $this->belongsTo(Line::class, 'line_id', 'id');
     }
+
+    public function departemen()
+    {
+        return $this->belongsTo(Line::class, 'departemen_id', 'id');
+    }
 }

@@ -48,6 +48,7 @@ class HrisController extends Controller
             $data = $this->hris($request);
 
             if (empty($data['accessToken'])) {
+                // ... (handle error login HRIS) ...
                 return response()->json([
                     'success' => false,
                     'message' => $data ?? 'Response Not Found',
@@ -55,10 +56,13 @@ class HrisController extends Controller
                 ]);
             }
             
+            // Sinkronkan data dari HRIS ke tabel 'users' (membuat atau update)
             $this->getAccount($data, $request);
 
             if (\Auth::attempt($kredensil)) {
-                $data = json_decode(auth()->user()->result, true);
+                $loggedInUser = auth()->user();
+        
+                $data = json_decode($loggedInUser->result, true);
                 
                 $lineMapping = Line::pluck('id', 'empOrg')->all();
 
@@ -66,14 +70,13 @@ class HrisController extends Controller
                 $lineId = null;
 
                 if ($empOrgCode && array_key_exists($empOrgCode, $lineMapping)) {
-                    // Jika kode HRIS ditemukan, ambil UUID yang sesuai
                     $lineId = $lineMapping[$empOrgCode];
                 }
 
-                // Lanjutkan dengan updateOrCreate
-                $user->profile()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['line_id' => $lineId] // $lineId sekarang berisi UUID atau null
+                // Gunakan $loggedInUser untuk update profile, bukan $user dari luar scope
+                $loggedInUser->profile()->updateOrCreate(
+                    ['user_id' => $loggedInUser->id],
+                    ['line_id' => $lineId]
                 );
 
                 (new LogActivityService())->handle([

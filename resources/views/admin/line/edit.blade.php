@@ -46,25 +46,13 @@
                                     @csrf
                                     <div class="mb-3">
                                         <div class="d-flex justify-content-between">
-                                            <label for="line_id" class="form-label">Job Level</label>
+                                            <label for="line_id" class="form-label">Line</label>
                                             <div class="form-check">
                                                 <input type="checkbox" id="checkAll" class="form-check-input">
                                                 <label class="form-check-label" for="checkAll">Check All</label>
                                             </div>
                                         </div>
-                                        <input type="text" name="line_id" class="form-control" value="{{ $line->name }}" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <label for="empOrg" class="form-label">Org Name</label>
-                                        </div>
-                                        <select class="form-control form-select" id="empOrg" name="empOrg" required>
-                                            <option value="{{ $line->departemen->EmpOrg}}">{{ $line->departemen->OrgName }}</option>
-                                            @foreach ($all_departemen as $departemen)
-                                                <option value="{{ $departemen->EmpOrg }}">{{ $departemen->OrgName }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="line_id" class="form-control" value="{{ $line->name }}" readonly style="cursor: not-allowed" required>
                                     </div>
 
                                     <div class="mb-3">

@@ -59,10 +59,10 @@ class User extends Authenticatable
         return $this->belongsTo(Roles::class, 'jobLvl', 'name');
     }
 
-    // public function departemen()
-    // {
-    //     return $this->belongsTo(DepartemenHris::class, 'deptKode', 'EmpOrg');
-    // }
+    public function departemen()
+    {
+        return $this->belongsTo(DepartemenHris::class, 'deptKode', 'EmpOrg');
+    }
 
     public function profile()
     {

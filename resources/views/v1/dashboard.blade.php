@@ -115,16 +115,25 @@
                                 <div class="machine-card card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
                                     <div class="card-body d-flex flex-column">
                                         @if ($item->image)
-                                            {{-- Jika mesin PUNYA gambar, tampilkan gambar tersebut --}}
                                             <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;"/>
                                         @else
-                                            {{-- Jika TIDAK ADA gambar, tampilkan ikon default --}}
                                             <img src="{{ asset('assets/img/no-image.png') }}" alt="No Image Available" style="height: 150px; width: 100%;">
                                         @endif
                                         <p class=""></p>
                                         <div class="mb-4">
-                                            {{-- PERBAIKAN 1: Dekatkan jarak baris --}}
-                                            <p class="text-muted mb-1" style="font-size: 15px;">{{ $item->line->name }}</p>
+                                            <p class="text-muted mb-1" style="font-size: 15px;">
+                                                @php
+                                                    $fullLineName = $item->line->name;
+                                                    $pos = stripos($fullLineName, 'Line');
+                                                    
+                                                    if ($pos !== false) {
+                                                        $lineOnly = substr($fullLineName, $pos);
+                                                        echo $lineOnly;
+                                                    } else {
+                                                        echo $fullLineName;
+                                                    }
+                                                @endphp
+                                            </p>
                                             <h5 class="card-title mb-1">{{ $item->kodeMesin }} - {{ $item->name }}</h5>
                                         </div>
 

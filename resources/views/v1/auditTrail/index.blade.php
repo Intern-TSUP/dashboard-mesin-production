@@ -59,7 +59,7 @@
                             style="width:100%">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Perusahaan</th>
                                     <th>User</th>
                                     <th>Action</th>
