@@ -115,7 +115,7 @@
                                 <div class="machine-card card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
                                     <div class="card-body d-flex flex-column">
                                         @if ($item->image)
-                                            <img src="{{ asset('mesin_image/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;"/>
+                                            <img src="{{ asset('assets/mesin_images/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;"/>
                                         @else
                                             <img src="{{ asset('assets/img/no-image.png') }}" alt="No Image Available" style="height: 150px; width: 100%;">
                                         @endif
@@ -389,7 +389,7 @@
 
                 let imageHtml = '<p class="text-muted">No image available</p>';
                 if (mesin.image) {
-                    let imageUrl = `{{ asset('mesin_image') }}/${mesin.image}`;
+                    let imageUrl = `{{ asset('assets/mesin_images') }}/${mesin.image}`;
                     imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
                 }
 

@@ -48,7 +48,6 @@ class HrisController extends Controller
             $data = $this->hris($request);
 
             if (empty($data['accessToken'])) {
-                // ... (handle error login HRIS) ...
                 return response()->json([
                     'success' => false,
                     'message' => $data ?? 'Response Not Found',
@@ -56,7 +55,6 @@ class HrisController extends Controller
                 ]);
             }
             
-            // Sinkronkan data dari HRIS ke tabel 'users' (membuat atau update)
             $this->getAccount($data, $request);
 
             if (\Auth::attempt($kredensil)) {
@@ -73,7 +71,6 @@ class HrisController extends Controller
                     $lineId = $lineMapping[$empOrgCode];
                 }
 
-                // Gunakan $loggedInUser untuk update profile, bukan $user dari luar scope
                 $loggedInUser->profile()->updateOrCreate(
                     ['user_id' => $loggedInUser->id],
                     ['line_id' => $lineId]

@@ -56,12 +56,11 @@ return [
             'report' => false,
         ],
 
-        'mesin_images' => [ 
-        'driver'     => 'local', 
-        'root'       => public_path('mesin_image'),
-        'url'        => env('APP_URL').'/mesin_image',
-        'visibility' => 'public',
-        'throw'      => false,
+        'mesin_images' => [
+            'driver'     => 'local',
+            'root'       => public_path('assets/mesin_images'),
+            'url'        => env('APP_URL').'/assets/mesin_images',
+            'visibility' => 'public',
         ],
 
         's3' => [
