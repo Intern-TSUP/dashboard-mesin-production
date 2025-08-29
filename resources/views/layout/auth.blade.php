@@ -15,7 +15,7 @@
     <meta name="author" content="FERDY MSTD-TSUP">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta property="og:site_name" content="PT Kalbe Farma" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    {{-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> --}}
     <link rel="shortcut icon" href="{{ asset('assets/logo/logo_only.png') }}" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="{{ asset('assets/css/inter_font_api.css') }}" />
