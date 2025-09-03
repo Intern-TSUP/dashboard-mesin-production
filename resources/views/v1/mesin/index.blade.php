@@ -534,7 +534,7 @@
 
                 let imageHtml = '<p class="text-muted">No image available</p>';
                 if (mesin.image) {
-                    let imageUrl = `{{ asset('mesin_image') }}/${mesin.image}`;
+                    let imageUrl = `{{ asset('assets/mesin_images') }}/${mesin.image}`;
                     imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
                 }
 
