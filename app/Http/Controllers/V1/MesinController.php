@@ -3,25 +3,22 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Line;
 use App\Models\Mesin;
 use App\Models\Proses;
-use App\Models\Line;
-use DB;
+use App\Services\System\LogActivityService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Auth;
-use App\Services\System\LogActivityService;
 
 class MesinController extends Controller
 {
-
     public function index()
     {
         $all_proses = Proses::orderBy('name', 'asc')->get();
 
         $lines = Line::with('mesins.proses')->get();
+
         return view('v1.mesin.index', compact('all_proses', 'lines'));
     }
 
@@ -42,7 +39,7 @@ class MesinController extends Controller
 
             // Terapkan filter Proses jika ada
             if ($request->filled('filter_proses')) {
-                $query->whereHas('proses', function($q) use ($request) {
+                $query->whereHas('proses', function ($q) use ($request) {
                     $q->where('proses.id', $request->filter_proses);
                 });
             }
@@ -53,53 +50,58 @@ class MesinController extends Controller
                     if ($mesin->proses->isEmpty()) {
                         return '-';
                     }
-                    return $mesin->proses->map(function($item) {
-                        return '<span class="badge badge-light m-1">' . $item->name . '</span>';
+
+                    return $mesin->proses->map(function ($item) {
+                        return '<span class="badge badge-light m-1">'.$item->name.'</span>';
                     })->implode(' ');
                 })
                 ->addColumn('line_name', function ($mesin) {
                     $fullLineName = $mesin->line->name;
                     $pos = stripos($fullLineName, 'Line');
-                    $line ='';
-                    
+                    $line = '';
+
                     if ($pos !== false) {
                         $line = substr($fullLineName, $pos);
                     } else {
                         $line = $fullLineName;
                     }
+
                     return $line;
                 })
                 ->addColumn('action', function ($row) {
-                    $detailBtn = '<button class="btn btn-sm btn-icon btn-light-info me-2" onclick="showDetail(\'' . $row->id . '\')" title="View Details"><i class="ki-duotone ki-eye fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
-                    $editBtn = '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\'' . $row->id . '\')" title="Edit"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
-                    $deleteBtn = '<button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')" title="Delete"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
-                    return $detailBtn . $editBtn . $deleteBtn;
+                    $detailBtn = '<button class="btn btn-sm btn-icon btn-light-info me-2" onclick="showDetail(\''.$row->id.'\')" title="View Details"><i class="ki-duotone ki-eye fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+                    $editBtn = '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\''.$row->id.'\')" title="Edit"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+                    $deleteBtn = '<button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\''.$row->id.'\')" title="Delete"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+
+                    return $detailBtn.$editBtn.$deleteBtn;
                 })
-                ->editColumn('kapasitas', function($mesin) {
+                ->editColumn('kapasitas', function ($mesin) {
                     $kapasitas = $mesin->kapasitas;
                     $satuanKapasitas = $mesin->satuanKapasitas;
                     if ($kapasitas) {
-                        $kapasitas = $kapasitas . ' ' . $satuanKapasitas;
+                        $kapasitas = $kapasitas.' '.$satuanKapasitas;
                     } else {
                         $kapasitas = '-';
                     }
-                    return '<span class="text-muted fw-bold">' . $kapasitas . '</span>';
+
+                    return '<span class="text-muted fw-bold">'.$kapasitas.'</span>';
                 })
-                ->editColumn('speed', function($mesin) {
+                ->editColumn('speed', function ($mesin) {
                     $speed = $mesin->speed;
                     $satuanSpeed = $mesin->satuanSpeed;
                     if ($speed) {
-                        $speed = $speed . ' ' . $satuanSpeed;
+                        $speed = $speed.' '.$satuanSpeed;
                     } else {
                         $speed = '-';
                     }
-                    return '<span class="text-muted fw-bold">' . $speed . '</span>';
+
+                    return '<span class="text-muted fw-bold">'.$speed.'</span>';
                 })
-                ->editColumn('updated_at', function($mesin) {
+                ->editColumn('updated_at', function ($mesin) {
                     return $mesin->tanggalUpdate;
                 })
                 ->rawColumns([
-                    'action', 'proses_name', 'kapasitas', 'speed', 'line_name', 'updated_at'
+                    'action', 'proses_name', 'kapasitas', 'speed', 'line_name', 'updated_at',
                 ])
                 ->make(true);
         }
@@ -110,6 +112,7 @@ class MesinController extends Controller
         $userLine = auth()->user()->profile?->line;
         $all_proses = Proses::all();
         $all_line = Line::all();
+
         return response()->json([
             'all_proses' => $all_proses,
             'all_line' => $all_line,
@@ -120,77 +123,75 @@ class MesinController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'line_id'          => 'required|exists:lines,id',
-            'kodeMesin'         => 'required|string|unique:mesins,kodeMesin',
-            'name'              => 'required|string|max:255',
-            'kapasitas'         => 'required|string',
-            'satuanKapasitas'   => 'required|string',
-            'speed'             => 'required|string',
-            'satuanSpeed'       => 'required|string',
-            'jumlahOperator'    => 'required|integer',
-            'proses_ids'        => 'required|array',
-            'keterangan'        => 'nullable|string',
-            'link_kualifikasi'   => 'nullable|url',
-            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'line_id' => 'required|exists:lines,id',
+            'kodeMesin' => 'required|string',
+            'name' => 'required|string|max:255',
+            'kapasitas' => 'required|string',
+            'satuanKapasitas' => 'required|string',
+            'speed' => 'required|string',
+            'satuanSpeed' => 'required|string',
+            'jumlahOperator' => 'required|integer',
+            'proses_ids' => 'required|array',
+            'keterangan' => 'nullable|string',
+            'link_kualifikasi' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // handle image upload if exists
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $fileName = time() . '_' . $originalName;
+            $fileName = time().'_'.$originalName;
             $path = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
         }
 
         try {
             $mesin = Mesin::create([
-                'line_id'           => $validatedData['line_id'],
-                'kodeMesin'         => $validatedData['kodeMesin'],
-                'name'              => $validatedData['name'],
-                'kapasitas'         => $validatedData['kapasitas'],
-                'satuanKapasitas'   => $validatedData['satuanKapasitas'],
-                'speed'             => $validatedData['speed'],
-                'satuanSpeed'       => $validatedData['satuanSpeed'],
-                'jumlahOperator'    => $validatedData['jumlahOperator'],
-                'keterangan'        => $validatedData['keterangan'],
-                'link_kualifikasi'  => $validatedData['link_kualifikasi'] ?? null,
-                'image'             => $validatedData['image'] ?? null,
+                'line_id' => $validatedData['line_id'],
+                'kodeMesin' => $validatedData['kodeMesin'],
+                'name' => $validatedData['name'],
+                'kapasitas' => $validatedData['kapasitas'],
+                'satuanKapasitas' => $validatedData['satuanKapasitas'],
+                'speed' => $validatedData['speed'],
+                'satuanSpeed' => $validatedData['satuanSpeed'],
+                'jumlahOperator' => $validatedData['jumlahOperator'],
+                'keterangan' => $validatedData['keterangan'],
+                'link_kualifikasi' => $validatedData['link_kualifikasi'] ?? null,
+                'image' => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->attach($request->proses_ids);
 
             $data = json_decode(auth()->user()->result, true);
-            if($data) {
+            if ($data) {
                 (new LogActivityService())->handle([
                     'perusahaan' => strtoupper($data['CompName']),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah Mesin',
-                    'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil menambah data mesin '.$mesin->name,
                 ]);
-            }
-            else {
+            } else {
                 (new LogActivityService())->handle([
                     'perusahaan' => '-',
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah Mesin',
-                    'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil menambah data mesin '.$mesin->name,
                 ]);
             }
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Machine Has Been Created',
-                'redirect' => route('v1.mesin.index')
+                'redirect' => route('v1.mesin.index'),
             ]);
-
-        } catch (\Throwable $th) { 
+        } catch (\Throwable $th) {
             $data = json_decode(auth()->user()->result, true);
             (new LogActivityService())->handle([
                 'perusahaan' => strtoupper($data['CompName']),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Tambah Mesin',
-                'catatan' => $th->getMessage() . ' ' . $mesin->name,
+                'catatan' => $th->getMessage().' '.$mesin->name,
             ]);
 
             return response()->json([
@@ -205,6 +206,7 @@ class MesinController extends Controller
         $userLine = auth()->user()->profile?->line;
         $mesin = Mesin::with('proses', 'line')->findOrFail($id);
         $allProses = Proses::all();
+
         return response()->json([
             'userLine' => $userLine,
             'mesin' => $mesin,
@@ -217,18 +219,18 @@ class MesinController extends Controller
         $mesin = Mesin::findOrFail($id);
 
         $validatedData = $request->validate([
-            'line_id'           => 'required|exists:lines,id',
-            'proses_ids'        => 'required|array',
-            'kodeMesin'         => 'required|string',
-            'name'              => 'required|string|max:255',
-            'kapasitas'         => 'required|string',
-            'satuanKapasitas'   => 'required|string',
-            'speed'             => 'required|string',
-            'satuanSpeed'       => 'required|string',
-            'jumlahOperator'    => 'required|integer',
-            'keterangan'        => 'nullable|string',
-            'link_kualifikasi'   => 'nullable|url',
-            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'line_id' => 'required|exists:lines,id',
+            'proses_ids' => 'required|array',
+            'kodeMesin' => 'required|string',
+            'name' => 'required|string|max:255',
+            'kapasitas' => 'required|string',
+            'satuanKapasitas' => 'required|string',
+            'speed' => 'required|string',
+            'satuanSpeed' => 'required|string',
+            'jumlahOperator' => 'required|integer',
+            'keterangan' => 'nullable|string',
+            'link_kualifikasi' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // handle image upload if exists
@@ -238,56 +240,53 @@ class MesinController extends Controller
             }
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $fileName = time() . '_' . $originalName;
+            $fileName = time().'_'.$originalName;
             $path = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
-        }
-        else {
+        } else {
             $validatedData['image'] = $mesin->image;
         }
 
         try {
             $mesin->update([
-                'line_id'           => $validatedData['line_id'],
-                'kodeMesin'         => $validatedData['kodeMesin'],
-                'name'              => $validatedData['name'],
-                'kapasitas'         => $validatedData['kapasitas'],
-                'satuanKapasitas'   => $validatedData['satuanKapasitas'],
-                'speed'             => $validatedData['speed'],
-                'satuanSpeed'       => $validatedData['satuanSpeed'],
-                'jumlahOperator'    => $validatedData['jumlahOperator'],
-                'keterangan'        => $validatedData['keterangan'] ?? null,
-                'link_kualifikasi'  => $validatedData['link_kualifikasi'] ?? null,
-                'image'             => $validatedData['image'] ?? null,
+                'line_id' => $validatedData['line_id'],
+                'kodeMesin' => $validatedData['kodeMesin'],
+                'name' => $validatedData['name'],
+                'kapasitas' => $validatedData['kapasitas'],
+                'satuanKapasitas' => $validatedData['satuanKapasitas'],
+                'speed' => $validatedData['speed'],
+                'satuanSpeed' => $validatedData['satuanSpeed'],
+                'jumlahOperator' => $validatedData['jumlahOperator'],
+                'keterangan' => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi' => $validatedData['link_kualifikasi'] ?? null,
+                'image' => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->sync($request->proses_ids);
 
             $data = json_decode(auth()->user()->result, true);
-            if($data) {
+            if ($data) {
                 (new LogActivityService())->handle([
                     'perusahaan' => strtoupper($data['CompName']),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Edit Mesin',
-                    'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil mengubah data mesin '.$mesin->name,
                 ]);
-            }
-            else {
+            } else {
                 (new LogActivityService())->handle([
                     'perusahaan' => '-',
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Edit Mesin',
-                    'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil mengubah data mesin '.$mesin->name,
                 ]);
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Machine Has Been Updated',
-                'redirect' => route('v1.mesin.index')
+                'redirect' => route('v1.mesin.index'),
             ]);
         } catch (\Throwable $th) {
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -305,24 +304,23 @@ class MesinController extends Controller
             if ($mesin->image) {
                 Storage::disk('mesin_images')->delete($mesin->image);
             }
-            
+
             $mesin->delete();
 
             $data = json_decode(auth()->user()->result, true);
-            if($data) {
+            if ($data) {
                 (new LogActivityService())->handle([
                     'perusahaan' => strtoupper($data['CompName']),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Delete Mesin',
-                    'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil menghapus data mesin '.$mesin->name,
                 ]);
-            }
-            else {
+            } else {
                 (new LogActivityService())->handle([
                     'perusahaan' => '-',
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Delete Mesin',
-                    'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
+                    'catatan' => 'Berhasil menghapus data mesin '.$mesin->name,
                 ]);
             }
 
@@ -331,13 +329,11 @@ class MesinController extends Controller
                 'message' => 'Machine Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
-                'redirect' => route('v1.mesin.index') 
+                'redirect' => route('v1.mesin.index'),
             ]);
         }
     }
-
 }
