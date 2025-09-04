@@ -123,8 +123,6 @@ class MesinController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'line_id' => 'required|exists:lines,id',
-            'kodeMesin' => 'required|string',
             'name' => 'required|string|max:255',
             'kapasitas' => 'required|string',
             'satuanKapasitas' => 'required|string',
@@ -148,8 +146,8 @@ class MesinController extends Controller
 
         try {
             $mesin = Mesin::create([
-                'line_id' => $validatedData['line_id'],
-                'kodeMesin' => $validatedData['kodeMesin'],
+                'line_id' => $request->line_id,
+                'kodeMesin' => $request->kodeMesin,
                 'name' => $validatedData['name'],
                 'kapasitas' => $validatedData['kapasitas'],
                 'satuanKapasitas' => $validatedData['satuanKapasitas'],
@@ -191,7 +189,7 @@ class MesinController extends Controller
                 'perusahaan' => strtoupper($data['CompName']),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Tambah Mesin',
-                'catatan' => $th->getMessage().' '.$mesin->name,
+                'catatan' => $th->getMessage(),
             ]);
 
             return response()->json([
