@@ -304,9 +304,9 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Kualifikasi</label>
+                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Dokumen</label>
                         <div class="col-sm-8">
-                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link kualifikasi mesin">
+                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link dokumen mesin">
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
@@ -440,9 +440,9 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Kualifikasi</label>
+                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Dokumen</label>
                         <div class="col-sm-8">
-                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link kualifikasi mesin">
+                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link dokumen mesin">
                         </div>
                     </div>
                     ${currentImageHtml}
@@ -567,7 +567,7 @@
                             <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr>
-                                <th>Link Kualifikasi</th>
+                                <th>Link Dokumen</th>
                                 <td>
                                     ${mesin.link_kualifikasi 
                                     ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
