@@ -14,7 +14,7 @@
         <!--end::Logo image-->
         <!--begin::Sidebar toggle-->
 
-        <!-- <div id="kt_app_sidebar_toggle"
+        <div id="kt_app_sidebar_toggle"
             class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate
             {{-- {{ request()->is('v1/formulir') ? 'active' : '' }} --}}"
             data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body"
@@ -23,7 +23,7 @@
                 <span class="path1"></span>
                 <span class="path2"></span>
             </i>
-        </div> -->
+        </div>
         <!--end::Sidebar toggle-->
     </div>
     <!--end::Logo-->
@@ -42,12 +42,17 @@
                     data-kt-menu="true" data-kt-menu-expand="false">
 
                     @php
-                        $profile = auth()->user()->profile;
-
-                        if ($profile && $profile->line) {
-                            $relation = $profile->line->permission; 
+                        if (auth()->user()->hasCustomRole()) {
+                            $hasRole = true;
+                            $relation = auth()
+                                ->user()
+                                ->userCustomRoleIs()
+                                ->map(fn($rel) => $rel->customRole?->permission)
+                                ->filter()
+                                ->flatten();
                         } else {
-                            $relation = auth()->user()->roles->permission; 
+                            $hasRole = false;
+                            $relation = auth()->user()->roles->permission;
                         }
                     @endphp
 
