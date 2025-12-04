@@ -422,7 +422,7 @@
                             <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr>
-                                <th>Link Dokumen</th>
+                                <th>Link Kualifikasi</th>
                                 <td>
                                     ${mesin.link_kualifikasi 
                                     ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
