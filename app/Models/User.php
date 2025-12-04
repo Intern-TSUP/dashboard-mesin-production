@@ -73,27 +73,4 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Session::class, 'id', 'user_id');
     }
-
-    public function hasCustomRole()
-    {
-        return UserHasCustomRole::query()
-            ->where('email', auth()->user()->email)
-            ->orWhere('email', auth()->user()->email_backup)
-            ->exists();
-    }
-
-    public function userCustomRole1()
-    {
-        return $this->hasMany(UserHasCustomRole::class, 'email', 'email');
-    }
-
-    public function userCustomRole2()
-    {
-        return $this->hasMany(UserHasCustomRole::class, 'email', 'email_backup');
-    }
-
-    public function userCustomRoleIs()
-    {
-        return $this->userCustomRole1->merge($this->userCustomRole2);
-    }
 }

@@ -4,25 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 // Admin Zone
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermission'])->group(function () {
-    // Custom Roles
-    Route::prefix('roles')->name('roles.')->middleware(['auth'])->group(function () {
-        Route::get('dt', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'getDataTable'])->name('getDT');
-        Route::get('', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'index'])->name('index');
-        Route::get('create', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'create'])->name('create');
-        Route::post('store', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'store'])->name('store');
-        Route::get('edit/{id}', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'edit'])->name('edit');
-        Route::post('update/{id}', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'update'])->name('update');
-        Route::post('destroy', [App\Http\Controllers\System\CustomRoles\CustomRolesController::class, 'destroy'])->name('destroy');
-
-        Route::prefix('assigned')->name('assigned.')->group(function () {
-            Route::get('dt', [App\Http\Controllers\System\CustomRoles\AssignedCustomRolesController::class, 'getDataTable'])->name('getDT');
-            Route::get('{role}/{id}', [App\Http\Controllers\System\CustomRoles\AssignedCustomRolesController::class, 'index'])->name('index');
-            Route::get('{role}/{id}/getEmployee', [App\Http\Controllers\System\CustomRoles\AssignedCustomRolesController::class, 'hrisGetEmployee'])->name('getHrisEmployee');
-            Route::post('{role}/{id}/store', [App\Http\Controllers\System\CustomRoles\AssignedCustomRolesController::class, 'store'])->name('store');
-            Route::delete('{role}/{id}', [App\Http\Controllers\System\CustomRoles\AssignedCustomRolesController::class, 'destroy'])->name('destroy');
-        });
-    });
-
     // permission role
     Route::prefix('permission')->name('permission.')->group(function () {
         Route::get('', [App\Http\Controllers\System\Permission\PermissionController::class, 'index'])->name('index');
@@ -74,15 +55,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::put('update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
         Route::get('search', [App\Http\Controllers\Admin\UserController::class, 'search'])->name('search');
-    });
-
-    // user Assigned to Custom Roles
-    Route::prefix('user-has-custom-role')->name('user-has-custom-role.')->group(function () {
-        Route::get('{role}/{id}', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'index'])->name('index');
-        Route::get('{role}/{id}/dt', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'getDataTable'])->name('getDT');
-        Route::get('{role}/{id}/getEmployee', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'hrisGetEmployee'])->name('getHrisEmployee');
-        Route::post('{role}/{id}/store', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'store'])->name('store');
-        Route::delete('{id}', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'destroy'])->name('destroy');
-        Route::put('update/{id}', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'update'])->name('update');
     });
 });

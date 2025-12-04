@@ -42,31 +42,6 @@ class CheckJobLvlPermission
             }
         }
 
-        // Ambil semua role yang dimiliki user, termasuk custom
-        $roles = [];
-
-        if ($user->hasCustomRole()) {
-            $customRoles = $user->userCustomRoleIs(); // array
-            foreach ($customRoles as $customRoleRel) {
-                if ($customRoleRel->customRole) {
-                    $roles[] = $customRoleRel->customRole;
-                }
-            }
-        } else {
-            if ($user->roles) {
-                $roles[] = $user->roles; // role default
-            }
-        }
-
-        // Cek apakah salah satu role punya permission terhadap route ini
-        $hasPermission = false;
-        foreach ($roles as $role) {
-            if (Permissions::where('role_id', $role->id)->where('url', $currentRoute)->exists()) {
-                $hasPermission = true;
-                break;
-            }
-        }
-
         // Jika tidak ada izin, tampilkan halaman forbidden
         if ($hasPermission) {
             return $next($request);
