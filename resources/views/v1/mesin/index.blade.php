@@ -235,7 +235,7 @@
                         <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" value="${response.userLine ? response.userLine.name : 'User tidak memiliki line'}" readonly style="cursor: not-allowed">
-                            <input type="hidden" id="line_id" name="line_id" value="d76a807e-e9c4-499c-b2a1-d39dcc40ae7f">
+                            <input type="hidden" id="line_id" name="line_id" value="${response.userLine ? response.userLine.id : ''}">
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
