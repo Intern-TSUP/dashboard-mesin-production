@@ -123,60 +123,67 @@ class MesinController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'kapasitas' => 'required|string',
-            'satuanKapasitas' => 'required|string',
-            'speed' => 'required|string',
-            'satuanSpeed' => 'required|string',
-            'jumlahOperator' => 'required|integer',
-            'proses_ids' => 'required|array',
-            'keterangan' => 'nullable|string',
-            'link_kualifikasi' => 'nullable|url',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'line_id'          => 'required|uuid',
+            'kodeMesin'        => 'required|string|max:255',
+            'name'             => 'required|string|max:255',
+            'kapasitas'        => 'required|string',
+            'satuanKapasitas'  => 'required|string',
+            'speed'            => 'required|string',
+            'satuanSpeed'      => 'required|string',
+            'jumlahOperator'   => 'required|integer',
+            'proses_ids'       => 'required|array',
+            'proses_ids.*'     => 'uuid',
+            'keterangan'       => 'nullable|string',
+            'link_kualifikasi'     => 'nullable|array|max:5',
+            'link_kualifikasi.*'   => 'nullable|url',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // handle image upload if exists
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
+            $file         = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $fileName = time().'_'.$originalName;
-            $path = $file->storeAs('', $fileName, 'mesin_images');
+            $fileName     = time().'_'.$originalName;
+            $path         = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
         }
 
+        $links = $request->input('link_kualifikasi', []);
+        
+        $link1 = $links[0] ?? null;
+        $link2 = $links[1] ?? null;
+        $link3 = $links[2] ?? null;
+        $link4 = $links[3] ?? null;
+        $link5 = $links[4] ?? null;
+
         try {
             $mesin = Mesin::create([
-                'line_id' => $request->line_id,
-                'kodeMesin' => $request->kodeMesin,
+                'line_id' => $validatedData['line_id'],
+                'kodeMesin' => $validatedData['kodeMesin'],
                 'name' => $validatedData['name'],
                 'kapasitas' => $validatedData['kapasitas'],
                 'satuanKapasitas' => $validatedData['satuanKapasitas'],
                 'speed' => $validatedData['speed'],
                 'satuanSpeed' => $validatedData['satuanSpeed'],
                 'jumlahOperator' => $validatedData['jumlahOperator'],
-                'keterangan' => $validatedData['keterangan'],
-                'link_kualifikasi' => $validatedData['link_kualifikasi'] ?? null,
+                'keterangan' => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi_1' => $link1,
+                'link_kualifikasi_2' => $link2,
+                'link_kualifikasi_3' => $link3,
+                'link_kualifikasi_4' => $link4,
+                'link_kualifikasi_5' => $link5,
                 'image' => $validatedData['image'] ?? null,
+                'inupby' => auth()->user()->email ?? '-',
             ]);
 
-            $mesin->proses()->attach($request->proses_ids);
+            $mesin->proses()->attach($validatedData['proses_ids']);
 
-            $data = json_decode(auth()->user()->result, true);
-            if ($data) {
-                (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Tambah Mesin',
-                    'catatan' => 'Berhasil menambah data mesin '.$mesin->name,
-                ]);
-            } else {
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Tambah Mesin',
-                    'catatan' => 'Berhasil menambah data mesin '.$mesin->name,
-                ]);
-            }
+            $data = auth()->user()->result ? json_decode(auth()->user()->result, true) : null;
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Mesin',
+                'catatan' => 'Berhasil menambah data mesin '.$mesin->name,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -184,9 +191,9 @@ class MesinController extends Controller
                 'redirect' => route('v1.mesin.index'),
             ]);
         } catch (\Throwable $th) {
-            $data = json_decode(auth()->user()->result, true);
+            $data = auth()->user()->result ? json_decode(auth()->user()->result, true) : null;
             (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Tambah Mesin',
                 'catatan' => $th->getMessage(),
@@ -217,71 +224,76 @@ class MesinController extends Controller
         $mesin = Mesin::findOrFail($id);
 
         $validatedData = $request->validate([
-            'line_id' => 'required|exists:lines,id',
-            'proses_ids' => 'required|array',
-            'kodeMesin' => 'required|string',
-            'name' => 'required|string|max:255',
-            'kapasitas' => 'required|string',
+            'line_id'         => 'required|exists:lines,id',
+            'proses_ids'      => 'required|array',
+            'proses_ids.*'    => 'uuid',
+            'kodeMesin'       => 'required|string',
+            'name'            => 'required|string|max:255',
+            'kapasitas'       => 'required|string',
             'satuanKapasitas' => 'required|string',
-            'speed' => 'required|string',
-            'satuanSpeed' => 'required|string',
-            'jumlahOperator' => 'required|integer',
-            'keterangan' => 'nullable|string',
-            'link_kualifikasi' => 'nullable|url',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'speed'           => 'required|string',
+            'satuanSpeed'     => 'required|string',
+            'jumlahOperator'  => 'required|integer',
+            'keterangan'      => 'nullable|string',
+            'link_kualifikasi'    => 'nullable|array|max:5',
+            'link_kualifikasi.*'  => 'nullable|url',
+
+            'image'           => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // handle image upload if exists
         if ($request->hasFile('image')) {
             if ($mesin->image) {
-                Storage::disk('public')->delete($mesin->image);
+                Storage::disk('mesin_images')->delete($mesin->image);
             }
-            $file = $request->file('image');
+
+            $file         = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $fileName = time().'_'.$originalName;
-            $path = $file->storeAs('', $fileName, 'mesin_images');
+            $fileName     = time().'_'.$originalName;
+            $path         = $file->storeAs('', $fileName, 'mesin_images');
             $validatedData['image'] = $path;
         } else {
             $validatedData['image'] = $mesin->image;
         }
 
+        $links = $request->input('link_kualifikasi', []);
+        $link1 = $links[0] ?? null;
+        $link2 = $links[1] ?? null;
+        $link3 = $links[2] ?? null;
+        $link4 = $links[3] ?? null;
+        $link5 = $links[4] ?? null;
+
         try {
             $mesin->update([
-                'line_id' => $validatedData['line_id'],
-                'kodeMesin' => $validatedData['kodeMesin'],
-                'name' => $validatedData['name'],
-                'kapasitas' => $validatedData['kapasitas'],
+                'line_id'         => $validatedData['line_id'],
+                'kodeMesin'       => $validatedData['kodeMesin'],
+                'name'            => $validatedData['name'],
+                'kapasitas'       => $validatedData['kapasitas'],
                 'satuanKapasitas' => $validatedData['satuanKapasitas'],
-                'speed' => $validatedData['speed'],
-                'satuanSpeed' => $validatedData['satuanSpeed'],
-                'jumlahOperator' => $validatedData['jumlahOperator'],
-                'keterangan' => $validatedData['keterangan'] ?? null,
-                'link_kualifikasi' => $validatedData['link_kualifikasi'] ?? null,
-                'image' => $validatedData['image'] ?? null,
+                'speed'           => $validatedData['speed'],
+                'satuanSpeed'     => $validatedData['satuanSpeed'],
+                'jumlahOperator'  => $validatedData['jumlahOperator'],
+                'keterangan'      => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi_1' => $link1,
+                'link_kualifikasi_2' => $link2,
+                'link_kualifikasi_3' => $link3,
+                'link_kualifikasi_4' => $link4,
+                'link_kualifikasi_5' => $link5,
+                'image'           => $validatedData['image'] ?? null,
             ]);
 
-            $mesin->proses()->sync($request->proses_ids);
+            $mesin->proses()->sync($validatedData['proses_ids']);
 
-            $data = json_decode(auth()->user()->result, true);
-            if ($data) {
-                (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Edit Mesin',
-                    'catatan' => 'Berhasil mengubah data mesin '.$mesin->name,
-                ]);
-            } else {
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper(auth()->user()->email),
-                    'tindakan' => 'Edit Mesin',
-                    'catatan' => 'Berhasil mengubah data mesin '.$mesin->name,
-                ]);
-            }
+            $data = auth()->user()->result ? json_decode(auth()->user()->result, true) : null;
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
+                'user'       => strtoupper(auth()->user()->email),
+                'tindakan'   => 'Edit Mesin',
+                'catatan'    => 'Berhasil mengubah data mesin '.$mesin->name,
+            ]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Machine Has Been Updated',
+                'success'  => true,
+                'message'  => 'Machine Has Been Updated',
                 'redirect' => route('v1.mesin.index'),
             ]);
         } catch (\Throwable $th) {

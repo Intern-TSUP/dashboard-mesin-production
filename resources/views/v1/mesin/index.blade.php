@@ -84,7 +84,7 @@
                         <!--begin::modal mesin-->
                         <div class="modal fade" tabindex="-1" id="modalMesin">
                             <form id="formMesin">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title" id="titleModalMesin"></h3>
@@ -235,7 +235,7 @@
                         <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" value="${response.userLine ? response.userLine.name : 'User tidak memiliki line'}" readonly style="cursor: not-allowed">
-                            <input type="hidden" id="line_id" name="line_id" value="${response.userLine ? response.userLine.id : ''}">
+                            <input type="hidden" id="line_id" name="line_id" value="d76a807e-e9c4-499c-b2a1-d39dcc40ae7f">
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
@@ -304,9 +304,36 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Dokumen</label>
+                        <label class="col-sm-4 col-form-label">Link Dokumen</label>
                         <div class="col-sm-8">
-                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link dokumen mesin">
+
+                            <!-- Wrapper semua input link -->
+                            <div id="linkDokumenWrapper">
+
+                                <!-- Row pertama (wajib ada minimal 1) -->
+                                <div class="row align-items-center mb-2 link-row">
+                                    <label class="col-sm-4 col-form-label d-none d-sm-block"></label>
+                                    <div class="col-sm-12 col-sm-8">
+                                        <div class="input-group">
+                                            <input type="url"
+                                                class="form-control"
+                                                name="link_kualifikasi[]"
+                                                placeholder="Masukkan link dokumen">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger ms-2 btn-delete-link d-none">
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Tombol tambah link -->
+                            <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAddLink">
+                                Tambah Link
+                            </button>
+                            <div class="form-text">Maksimal 5 link dokumen, minimal 1.</div>
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
@@ -325,10 +352,69 @@
                     dropdownParent: $('#modalMesin') // agar tampilan dropdown lebih baik
                 });
 
+                updateDeleteButtons();
+
                 $('#modalMesin').modal('show');
 
             });
         }
+
+        const maxLinks = 5;
+
+        function updateDeleteButtons() {
+            const rows = $('#linkDokumenWrapper .link-row');
+
+            if (rows.length === 1) {
+                rows.find('.btn-delete-link').addClass('d-none');
+            } else {
+                rows.find('.btn-delete-link').removeClass('d-none');
+            }
+        }
+
+        // Tambah link (DELEGATED) -> bisa dipasang sekali saja
+        $(document).on('click', '#btnAddLink', function () {
+            const wrapper = $('#linkDokumenWrapper');
+            const count = wrapper.find('.link-row').length;
+
+            if (count >= maxLinks) {
+                return;
+            }
+
+            const newRow = `
+                <div class="row align-items-center mb-2 link-row">
+                    <label class="col-sm-4 col-form-label d-none d-sm-block"></label>
+                    <div class="col-sm-12 col-sm-8">
+                        <div class="input-group">
+                            <input type="url"
+                                class="form-control"
+                                name="link_kualifikasi[]"
+                                placeholder="Masukkan link dokumen">
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2 btn-delete-link">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            wrapper.append(newRow);
+            updateDeleteButtons();
+        });
+
+        // Hapus link (DELEGATED – ini sudah benar)
+        $(document).on('click', '.btn-delete-link', function () {
+            const wrapper = $('#linkDokumenWrapper');
+            const rows = wrapper.find('.link-row');
+
+            if (rows.length <= 1) {
+                // minimal harus tetap ada 1 input
+                return;
+            }
+
+            $(this).closest('.link-row').remove();
+            updateDeleteButtons();
+        });
 
         function editRuang(id) {
             $('#formMesin')[0].reset();
@@ -440,9 +526,17 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
-                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Dokumen</label>
+                        <label class="col-sm-4 col-form-label">Link Dokumen</label>
                         <div class="col-sm-8">
-                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link dokumen mesin">
+
+                            <div id="linkDokumenWrapper">
+                                
+                            </div>
+
+                            <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAddLink">
+                                Tambah Link
+                            </button>
+                            <div class="form-text">Maksimal 5 link dokumen, minimal 1.</div>
                         </div>
                     </div>
                     ${currentImageHtml}
@@ -464,7 +558,51 @@
                 $('#satuanSpeed').val(mesin.satuanSpeed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
                 $('#keterangan').val(mesin.keterangan);
-                $('#link_kualifikasi').val(mesin.link_kualifikasi);
+                
+                const links = [
+                    mesin.link_kualifikasi_1,
+                    mesin.link_kualifikasi_2,
+                    mesin.link_kualifikasi_3,
+                    mesin.link_kualifikasi_4,
+                    mesin.link_kualifikasi_5,
+                ].filter(function (val) {
+                    return val !== null && val !== undefined && val !== '';
+                });
+
+                const wrapper = $('#linkDokumenWrapper');
+                wrapper.empty();
+
+                // minimal selalu ada 1 row
+                if (links.length === 0) {
+                    links.push('');
+                }
+
+                links.forEach(function (value, index) {
+                    const rowHtml = `
+                        <div class="row align-items-center mb-2 link-row">
+                            <label class="col-sm-4 col-form-label d-none d-sm-block"></label>
+                            <div class="col-sm-12 col-sm-8">
+                                <div class="input-group">
+                                    <input type="url"
+                                        class="form-control"
+                                        name="link_kualifikasi[]"
+                                        placeholder="Masukkan link dokumen mesin"
+                                        value="${value ?? ''}">
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger ms-2 btn-delete-link">
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    wrapper.append(rowHtml);
+                });
+
+                // atur tombol hapus (fungsi global yang sudah kamu buat)
+                if (typeof updateDeleteButtons === 'function') {
+                    updateDeleteButtons();
+                }
 
                 let prosesSelect = $('#proses_ids');
                 prosesSelect.empty();
@@ -518,7 +656,7 @@
             $('#bodyModalDetailMesin').html('<p class="text-center">Loading data...</p>');
             $('#modalDetailMesin').modal('show');
 
-            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
+            let url = `{{ url('v1/mesin/edit') }}/${id}`;
 
             $.get(url, function (response) {
                 let mesin = response.mesin;
@@ -526,60 +664,84 @@
                 let prosesList = '<p>Tidak ada proses terkait.</p>';
                 if (mesin.proses && mesin.proses.length > 0) {
                     prosesList = '<ul class="list-group list-group-flush">';
-                    mesin.proses.forEach(function(p) {
+                    mesin.proses.forEach(function (p) {
                         prosesList += `<li class="list-group-item">${p.name}</li>`;
-                    }); 
+                    });
                     prosesList += '</ul>';
                 }
 
                 let imageHtml = '<p class="text-muted">No image available</p>';
                 if (mesin.image) {
                     let imageUrl = `{{ asset('assets/mesin_images') }}/${mesin.image}`;
-                    imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
+                    imageHtml = `
+                        <img src="${imageUrl}" 
+                            alt="${mesin.name}" 
+                            class="img-fluid rounded" 
+                            style="max-height: 200px; display:block; margin:auto;">
+                    `;
                 }
 
-                let updatedAt = mesin.updated_at;
-                if (updatedAt) {
-                    updatedAt = new Date(updatedAt).toLocaleString('id-ID', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                    });
+                let updatedAt = mesin.updated_at
+                    ? new Date(mesin.updated_at).toLocaleDateString('id-ID')
+                    : '-';
+
+                let linkDokumenHtml = '';
+                let linkFields = [
+                    mesin.link_kualifikasi_1,
+                    mesin.link_kualifikasi_2,
+                    mesin.link_kualifikasi_3,
+                    mesin.link_kualifikasi_4,
+                    mesin.link_kualifikasi_5
+                ];
+
+                let anyLinkExists = linkFields.some(v => v && v.trim() !== '');
+
+                if (!anyLinkExists) {
+                    linkDokumenHtml = `<tr><th>Link Dokumen</th><td>-</td></tr>`;
                 } else {
-                    updatedAt = '-';
+                    linkFields.forEach((value, index) => {
+                        if (value && value.trim() !== '') {
+                            linkDokumenHtml += `
+                                <tr>
+                                    <th>Link Dokumen ${index + 1}</th>
+                                    <td>
+                                        <a href="${value}" target="_blank" class="text-primary fw-bold">
+                                            Lihat Form ${index + 1}
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    });
                 }
-                
+
                 $('#bodyModalDetailMesin').html(`
-                    <div class="mb-5 flex-row align-items-center items-center justify-center">
+                    <div class="mb-5 text-center">
                         ${imageHtml}
                     </div>
+
                     <table class="table table-bordered table-striped border border-4">
                         <tbody>
                             <tr><th class="w-250px">Line</th><td>${mesin.line ? mesin.line.name : '-'}</td></tr>
-                            <tr>
-                                <th class="align-middle">Proses</th>
-                                <td>${prosesList}</td>
-                            </tr>
+
+                            <tr><th>Proses</th><td>${prosesList}</td></tr>
+
                             <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
                             <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
                             <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
                             <tr><th>Kapasitas</th><td>${mesin.kapasitas} ${mesin.satuanKapasitas}</td></tr>
                             <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
-                            <tr>
-                                <th>Link Dokumen</th>
-                                <td>
-                                    ${mesin.link_kualifikasi 
-                                    ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
-                                    : '-'}
-                                </td>
-                            </tr>
+
+                            ${linkDokumenHtml}
+
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>
                     </table>
                 `);
-            }).fail(function() {
+            })
+            .fail(function () {
                 $('#bodyModalDetailMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }

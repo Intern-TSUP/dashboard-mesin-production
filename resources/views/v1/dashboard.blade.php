@@ -403,6 +403,36 @@
                 } else {
                     updatedAt = '-';
                 }
+
+                let linkDokumenHtml = '';
+                let linkFields = [
+                    mesin.link_kualifikasi_1,
+                    mesin.link_kualifikasi_2,
+                    mesin.link_kualifikasi_3,
+                    mesin.link_kualifikasi_4,
+                    mesin.link_kualifikasi_5
+                ];
+
+                let anyLinkExists = linkFields.some(v => v && v.trim() !== '');
+
+                if (!anyLinkExists) {
+                    linkDokumenHtml = `<tr><th>Link Dokumen</th><td>-</td></tr>`;
+                } else {
+                    linkFields.forEach((value, index) => {
+                        if (value && value.trim() !== '') {
+                            linkDokumenHtml += `
+                                <tr>
+                                    <th>Link Dokumen ${index + 1}</th>
+                                    <td>
+                                        <a href="${value}" target="_blank" class="text-primary fw-bold">
+                                            Lihat Form ${index + 1}
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    });
+                }
                 
                 $('#bodyModalDetailMesin').html(`
                     <div class="mb-5 flex-row align-items-center items-center justify-center">
@@ -421,14 +451,9 @@
                             <tr><th>Kapasitas</th><td>${mesin.kapasitas} ${mesin.satuanKapasitas}</td></tr>
                             <tr><th>Speed</th><td>${mesin.speed} ${mesin.satuanSpeed}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
-                            <tr>
-                                <th>Link Dokumen</th>
-                                <td>
-                                    ${mesin.link_kualifikasi 
-                                    ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
-                                    : '-'}
-                                </td>
-                            </tr>
+                            
+                            ${linkDokumenHtml}
+
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>
