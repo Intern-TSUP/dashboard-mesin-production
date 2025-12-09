@@ -37,9 +37,8 @@
         </div>
         <!--end:Menu item-->
 
-        @foreach ($relation as $item)
+        {{-- @foreach ($relation as $item)
             @if (Str::is('admin.department.index', $item->url))
-                {{-- Department --}}
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
@@ -61,7 +60,7 @@
                 <!--end:Menu item-->
                 @break
             @endif
-        @endforeach
+        @endforeach --}}
 
         @foreach ($relation as $item)
             @if (Str::is('admin.roles.index', $item->url))

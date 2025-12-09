@@ -211,153 +211,199 @@
         // let id_temp = "";
 
         function addRuang() {
-            // isEdit_temp = 0;
-            $('#formMesin')[0].reset();  // clear the form
-            $('#titleModalMesin').html('Add New Mesin');
-            $('#formMesin').find('input[name="_method"]').remove();
+    // isEdit_temp = 0;
+    $('#formMesin')[0].reset();  // clear the form
+    $('#titleModalMesin').html('Add New Mesin');
+    $('#formMesin').find('input[name="_method"]').remove();
 
-            $('#formMesin').attr('action', "{{ route('v1.mesin.store') }}");
-            $('#formMesin').attr('method', 'POST');
+    $('#formMesin').attr('action', "{{ route('v1.mesin.store') }}");
+    $('#formMesin').attr('method', 'POST');
 
-            $.get("{{ route('v1.mesin.create') }}", function(response) {
-                let prosesOptions='';
-                response.all_proses.forEach(function(proses) {
-                    prosesOptions += `<option value="${proses.id}">${proses.name}</option>`;
-                });
-                
-                let linesOptions = '';
-                response.all_line.forEach(function(line) {
-                    linesOptions += `<option value="${line.id}">${line.name}</option>`;
-                });
+    $.get("{{ route('v1.mesin.create') }}", function(response) {
+        // --- Proses options ---
+        let prosesOptions = '';
+        response.all_proses.forEach(function (proses) {
+            prosesOptions += `<option value="${proses.id}">${proses.name}</option>`;
+        });
 
-                $('#bodyModalMesin').html(`
-                    <div class="row align-items-center mb-3">
-                        <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" value="${response.userLine ? response.userLine.name : 'User tidak memiliki line'}" readonly style="cursor: not-allowed">
-                            <input type="hidden" id="line_id" name="line_id" value="${response.userLine ? response.userLine.id : ''}">
-                        </div>
+        // --- Lines options & select ---
+        let linesOptions = '';
+        response.all_line.forEach(function (line) {
+            linesOptions += `<option value="${line.id}">${line.name}</option>`;
+        });
+
+        let linesSelect = `
+            <select name="line_id"
+                aria-label="Select a line"
+                data-control="select2"
+                data-allow-clear="true"
+                data-placeholder="Select an item..."
+                class="form-select fw-bold"
+                required>
+                <option value="">Select Line</option>
+                ${linesOptions}
+            </select>
+        `;
+
+        // --- Tentukan row Line berdasarkan userLine ---
+        let lineRowHtml = '';
+
+        if (response.userLine) {
+            // User sudah punya line → pakai readonly + hidden (seperti sebelumnya)
+            lineRowHtml = `
+                <div class="row align-items-center mb-3">
+                    <label for="line_id" class="col-sm-4 col-form-label">
+                        Line<span class="text-danger">*</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text"
+                            class="form-control"
+                            value="${response.userLine.name}"
+                            readonly
+                            style="cursor: not-allowed">
+                        <input type="hidden"
+                            id="line_id"
+                            name="line_id"
+                            value="${response.userLine.id}">
                     </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
-                        </div>
+                </div>
+            `;
+        } else {
+            // User tidak punya line → pakai select pilihan line
+            lineRowHtml = `
+                <div class="row align-items-center mb-3">
+                    <label for="line_id" class="col-sm-4 col-form-label">
+                        Line<span class="text-danger">*</span>
+                    </label>
+                    <div class="col-sm-8">
+                        ${linesSelect}
                     </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
-                                <select class="form-control form-select w-25" id="satuanKapasitas" name="satuanKapasitas" required>
-                                    <option value="" disabled selected>Satuan</option>
-                                    <option value="Kilogram">Kilogram</option>
-                                    <option value="Liter">Liter</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="speed" class="col-sm-4 col-form-label">Speed<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
-                                <select class="form-control form-select w-25" id="satuanSpeed" name="satuanSpeed" required>
-                                    <option value="" disabled selected>Satuan</option>
-                                    <option value="Batch/menit">Batch/menit</option>
-                                    <option value="Blister/menit">Blister/menit</option>
-                                    <option value="Botol/menit">Botol/menit</option>
-                                    <option value="Box/menit">Box/menit</option>
-                                    <option value="Cap/menit">Cap/menit</option>
-                                    <option value="Lot/menit">Lot/menit</option>
-                                    <option value="Strip/menit">Strip/menit</option>
-                                    <option value="Tab/menit">Tab/menit</option>
-                                    <option value="Tub/menit">Tub/menit</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" data-placeholder="-- Select Proses --" required>
-                                ${prosesOptions}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="keterangan" class="col-sm-4 col-form-label">Keterangan</label>
-                        <div class="col-sm-8">
-                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan mesin"></textarea>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label class="col-sm-4 col-form-label">Link Dokumen</label>
-                        <div class="col-sm-8">
-
-                            <!-- Wrapper semua input link -->
-                            <div id="linkDokumenWrapper">
-
-                                <!-- Row pertama (wajib ada minimal 1) -->
-                                <div class="row align-items-center mb-2 link-row">
-                                    <label class="col-sm-4 col-form-label d-none d-sm-block"></label>
-                                    <div class="col-sm-12 col-sm-8">
-                                        <div class="input-group">
-                                            <input type="url"
-                                                class="form-control"
-                                                name="link_kualifikasi[]"
-                                                placeholder="Masukkan link dokumen">
-                                            <button type="button"
-                                                    class="btn btn-sm btn-danger ms-2 btn-delete-link d-none">
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <!-- Tombol tambah link -->
-                            <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAddLink">
-                                Tambah Link
-                            </button>
-                            <div class="form-text">Maksimal 5 link dokumen, minimal 1.</div>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="image" class="col-sm-4 col-form-label">Image</label>
-                        <div class="col-sm-8">
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                        </div>
-                    </div>
-                `);
-
-                $('#proses_ids').select2({
-                    dropdownParent: $('#modalMesin') // agar tampilan dropdown lebih baik
-                });
-
-                $('#lines_ids').select2({
-                    dropdownParent: $('#modalMesin') // agar tampilan dropdown lebih baik
-                });
-
-                updateDeleteButtons();
-
-                $('#modalMesin').modal('show');
-
-            });
+                </div>
+            `;
         }
+
+        // --- Render body modal ---
+        $('#bodyModalMesin').html(`
+            ${lineRowHtml}
+            <div class="row align-items-center mb-3">
+                <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Kapasitas" required>
+                        <select class="form-control form-select w-25" id="satuanKapasitas" name="satuanKapasitas" required>
+                            <option value="" disabled selected>Satuan</option>
+                            <option value="Kilogram">Kilogram</option>
+                            <option value="Liter">Liter</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="speed" class="col-sm-4 col-form-label">Speed<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="speed" name="speed" placeholder="Speed" required>
+                        <select class="form-control form-select w-25" id="satuanSpeed" name="satuanSpeed" required>
+                            <option value="" disabled selected>Satuan</option>
+                            <option value="Batch/menit">Batch/menit</option>
+                            <option value="Blister/menit">Blister/menit</option>
+                            <option value="Botol/menit">Botol/menit</option>
+                            <option value="Box/menit">Box/menit</option>
+                            <option value="Cap/menit">Cap/menit</option>
+                            <option value="Lot/menit">Lot/menit</option>
+                            <option value="Strip/menit">Strip/menit</option>
+                            <option value="Tab/menit">Tab/menit</option>
+                            <option value="Tub/menit">Tub/menit</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" data-placeholder="-- Select Proses --" required>
+                        ${prosesOptions}
+                    </select>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="keterangan" class="col-sm-4 col-form-label">Keterangan</label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan mesin"></textarea>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label">Link Dokumen</label>
+                <div class="col-sm-8">
+
+                    <div id="linkDokumenWrapper">
+                        <div class="row align-items-center mb-2 link-row">
+                            <label class="col-sm-4 col-form-label d-none d-sm-block"></label>
+                            <div class="col-sm-12 col-sm-8">
+                                <div class="input-group">
+                                    <input type="url"
+                                        class="form-control"
+                                        name="link_kualifikasi[]"
+                                        placeholder="Masukkan link dokumen">
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger ms-2 btn-delete-link d-none">
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAddLink">
+                        Tambah Link
+                    </button>
+                    <div class="form-text">Maksimal 5 link dokumen, minimal 1.</div>
+                </div>
+            </div>
+            <div class="row align-items-center mb-3">
+                <label for="image" class="col-sm-4 col-form-label">Image</label>
+                <div class="col-sm-8">
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
+            </div>
+        `);
+
+        // Select2 untuk proses
+        $('#proses_ids').select2({
+            dropdownParent: $('#modalMesin')
+        });
+
+        // Kalau pakai select line, aktifkan juga select2 untuk line
+        $('[name="line_id"][data-control="select2"]').select2({
+            dropdownParent: $('#modalMesin')
+        });
+
+        // Inisialisasi tombol delete link
+        if (typeof updateDeleteButtons === 'function') {
+            updateDeleteButtons();
+        }
+
+        $('#modalMesin').modal('show');
+    });
+}
 
         const maxLinks = 5;
 
