@@ -6,44 +6,26 @@
     {{ ucwords($role->name) }} Management
 @endsection
 @section('breadcrumb')
-    <!--begin::Breadcrumb-->
     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-        <!--begin::Item-->
         <li class="breadcrumb-item text-muted">
             <a href="#" class="text-muted text-hover-primary">Home</a>
         </li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item">
             <span class="bullet bg-gray-400 w-5px h-2px"></span>
         </li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item text-muted">admin</li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item">
             <span class="bullet bg-gray-400 w-5px h-2px"></span>
         </li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item text-muted">user</li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item">
             <span class="bullet bg-gray-400 w-5px h-2px"></span>
         </li>
-        <!--end::Item-->
-        <!--begin::Item-->
         <li class="breadcrumb-item text-muted">{{ ucwords($role->name) }}</li>
-        <!--end::Item-->
     </ul>
-    <!--end::Breadcrumb-->
 @endsection
 @section('main-content')
-    <!--begin::Content-->
     <div id="kt_app_content" class="app-content flex-column-fluid">
-        <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-fluid d-flex flex-column flex-column-fluid">
             <div class="row">
                 <div class="col-12 col-md-8">
@@ -55,8 +37,7 @@
                                         <h5 class="my-0">Managament Account {{ ucwords($role->name) }}</h5>
                                     </div>
                                     <div class="col-12 my-0 py-0">
-                                        <span class="fw-light fs-8">Create Or Update Or Delete User
-                                            {{ ucwords($role->name) }}</span>
+                                        <span class="fw-light fs-8">Create Or Update Or Delete User {{ ucwords($role->name) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -70,8 +51,7 @@
                                             <span class="path2"></span>
                                         </i>
                                     </span>
-                                    <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
-                                        placeholder="Search User" />
+                                    <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14" placeholder="Search User" />
                                 </div>
                                 <table id="dt_userTable"
                                     class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
@@ -106,6 +86,20 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div class="d-flex justify-content-center mb-5">
+                                <div class="btn-group w-100 user-toggle" role="group">
+                                    <input type="radio" class="btn-check" name="dataSource" id="sourceWorkday" value="workday" checked autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="sourceWorkday">
+                                        Workday
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="dataSource" id="sourceLokal" value="lokal" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="sourceLokal">
+                                        Lokal
+                                    </label>
+                                </div>
+                            </div>
+
                             <form id="employeeForm" name="employeeForm">
                                 <input type="hidden" name="employee_id" id="employee_id">
                                 <input type="text" class="d-none" name="fullname">
@@ -223,6 +217,12 @@
                     url: "{{ route('admin.user-has-custom-role.getHrisEmployee', [strtolower(str_replace(' ', '-', $role->name)), $role->id]) }}",
                     dataType: 'json',
                     delay: 150,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            source: $("input[name='dataSource']:checked").val() 
+                        };
+                    },
                     processResults: data => {
                         return {
                             results: data.map(res => {

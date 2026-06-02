@@ -76,6 +76,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::get('search', [App\Http\Controllers\Admin\UserController::class, 'search'])->name('search');
     });
 
+    Route::prefix('localUser')->name('localUser.')->group(function () {
+        Route::get('', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'index'])->name('index');
+        Route::get('getData', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'getData'])->name('getData');
+        Route::get('searchEmployee', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'searchEmployee'])->name('searchEmployee');
+        Route::post('store', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'store'])->name('store');
+        Route::post('update', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'update'])->name('update');
+        Route::post('destroy', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'destroy'])->name('destroy');
+        Route::post('resetPassword', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'resetPassword'])->name('resetPassword');
+    });
+
     // user Assigned to Custom Roles
     Route::prefix('user-has-custom-role')->name('user-has-custom-role.')->group(function () {
         Route::get('{role}/{id}', [App\Http\Controllers\System\User\UserCustomRolesController::class, 'index'])->name('index');

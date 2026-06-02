@@ -317,10 +317,10 @@ class MesinController extends Controller
 
             $mesin->delete();
 
-            $data = json_decode(auth()->user()->result, true);
-            if ($data) {
+            $data = json_decode(auth()->user()->result ?? '{}', true);
+            if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Delete Mesin',
                     'catatan' => 'Berhasil menghapus data mesin '.$mesin->name,

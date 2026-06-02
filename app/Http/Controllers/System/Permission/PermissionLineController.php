@@ -88,10 +88,10 @@ class PermissionLineController extends Controller
 
             DB::commit();
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah Permission Line',
                     'catatan' => 'Berhasil menambah permission ' . $line['name'],
@@ -144,10 +144,10 @@ class PermissionLineController extends Controller
             $line->permission()->create(['url' => $url]);
         }
 
-        $data = json_decode(auth()->user()->result, true);
+        $data = json_decode(auth()->user()->result ?? '{}', true);
         if($data) {
             (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Edit Permission Line',
                 'catatan' => 'Berhasil mengubah permission ' . $line->name,
@@ -188,10 +188,10 @@ class PermissionLineController extends Controller
         // Hapus line
         $line->delete();
 
-        $data = json_decode(auth()->user()->result, true);
+        $data = json_decode(auth()->user()->result ?? '{}', true);
         if($data) {
             (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Hapus Permission Line',
                 'catatan' => 'Berhasil menghapus permission ' . $line->name,
@@ -286,10 +286,10 @@ class PermissionLineController extends Controller
                 ['line_id' => $line->id]
             );
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah User ke Permission Line',
                     'catatan' => 'Berhasil menambah user ' . $user->fullname . ' ke permission ' . $line->name,
@@ -335,10 +335,10 @@ class PermissionLineController extends Controller
             $user->profile->delete();
         }
 
-        $data = json_decode(auth()->user()->result, true);
+        $data = json_decode(auth()->user()->result ?? '{}', true);
         if($data) {
             (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Hapus User dari Permission Line',
                 'catatan' => 'Berhasil menghapus user ' . $user->fullname . ' dari permission line',

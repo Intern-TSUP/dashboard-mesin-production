@@ -48,10 +48,10 @@ class ProsesController extends Controller
         try {
             Proses::create($proses);
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah Proses',
                     'catatan' => 'Berhasil menambah data proses ' . $proses['name'],
@@ -96,10 +96,10 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->update($prosesData);
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Edit Proses',
                     'catatan' => 'Berhasil mengubah data proses ' . $proses->name,
@@ -134,10 +134,10 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->delete();
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Hapus Proses',
                     'catatan' => 'Berhasil menghapus data proses ' . $proses->name,

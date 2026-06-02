@@ -60,10 +60,10 @@ class LineController extends Controller
         try {
             Line::create($line);
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Tambah Line',
                     'catatan' => 'Berhasil menambah ' . $line['name'],
@@ -115,10 +115,10 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->update($lineData);
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Edit Mesin',
                     'catatan' => 'Berhasil mengubah ' . $line->name,
@@ -154,10 +154,10 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->delete();
 
-            $data = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             if($data) {
                 (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
+                    'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                     'user' => strtoupper(auth()->user()->email),
                     'tindakan' => 'Hapus Line',
                     'catatan' => 'Berhasil menghapus ' . $line->name,

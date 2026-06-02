@@ -13,6 +13,8 @@ Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])
 
 Route::get('/logout', [App\Http\Controllers\Auth\HrisController::class, 'logout'])->name('logout');
 
+Route::post('/updatePassword', [App\Http\Controllers\System\LocalUser\LocalUserController::class, 'updatePassword'])->middleware('NetworkTesting')->name('updatePassword');
+
 Route::post('/clear-notifications', [App\Http\Controllers\System\NotificationController::class, 'clear']);
 Route::post('/read-notifications', [App\Http\Controllers\System\NotificationController::class, 'clear']);
 

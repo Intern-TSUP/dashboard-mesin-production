@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System\User;
 use App\Http\Controllers\Controller;
 use App\Models\CustomRole;
 use App\Models\MaintenanceMode;
+use App\Models\User;
 use App\Models\UserHasCustomRole;
 use App\Services\System\LogActivityService;
 use Illuminate\Http\Request;
@@ -62,37 +63,59 @@ class UserCustomRolesController extends Controller
 
     public function hrisGetEmployee(Request $request)
     {
-        $app = MaintenanceMode::first();
+        if ($request->source == 'lokal') {
+            $data = User::where('fullname', 'ILIKE', '%' . trim($request->q) . '%')->where('is_local', true)->get();
 
-        // $users = User::where('fullname', 'like', '%' . $request->q . '%')->get();
-        $text = 'https://api-global-bundle-3scale-production.kalbe.co.id/globaluserprofile/api/UserProfile/ListUsers/Name/'.$request->q;
+            $result = [];
+            foreach ($data as $item) {
+                $result[] = [
+                    'id' => $item->employeId,
+                    'fullname' => $item->fullname,
+                    'email' => $item->email,
+                    'phone' => $item->phone ?? 'NA',
+                    'jobTitle' => $item->job_title ?? 'NA',
+                    'subDept' => $item->groupName ?? 'NA',
+                    'dept' => $item->groupName ?? 'NA',
+                ];
+            }
 
-        $response = \Http::withHeaders([
-            'Accept' => 'application/json',
-            'X-API-VERSION' => '3',
-            'X-API-TOKEN' => 'gagjc3ej3e8actv14ud8lqa9llbda4oaluvlrzkcirdqdml5rc9gdrpi4wq920of',
-            'app_id' => '8a33cfd2',
-            'app_key' => 'f7cce2000d6a3bbdb10e43871a19fadf'
-        ])->get($text);
-        $response = $response->json();
+            return response()->json($result, 200);
+        } else {
+            $text = 'https://api-global-bundle-3scale-production.kalbe.co.id/globaluserprofile/api/UserProfile/ListUsers/Name/'.$request->q;
 
-        $filtered = collect($response)->filter(function ($item) {
-            return isset($item['EmpId']) &&
-                preg_match('/^[0-9]+$/', $item['EmpId']);
-        })->values();
+            $response = \Http::withHeaders([
+                'Accept' => 'application/json',
+                'X-API-VERSION' => '3',
+                'X-API-TOKEN' => 'gagjc3ej3e8actv14ud8lqa9llbda4oaluvlrzkcirdqdml5rc9gdrpi4wq920of',
+                'app_id' => '8a33cfd2',
+                'app_key' => 'f7cce2000d6a3bbdb10e43871a19fadf'
+            ])->get($text);
+            
+            $response = $response->json();
 
-        $data = [];
-        foreach ($filtered as $item) {
-            // code...
-            $data[] = [
-                'id' => $item['EmpId'],
-                'fullname' => $item['EmployeeName'],
-                'email' => $item['Email'],
-                'phone' => $item['EmpHandPhone'] ?? 'NA',
-                'jobTitle' => $item['JobTtlName'],
-                'subDept' => $item['OrgName'],
-                'dept' => $item['OrgGroupName'],
-            ];
+            $filtered = collect($response)->filter(function ($item) {
+                return isset($item['EmpId']) && preg_match('/^[0-9]+$/', $item['EmpId']);
+            })->values();
+
+            $data = [];
+            foreach ($filtered as $item) {
+                $email = trim((string) ($item['Email'] ?? ''));
+                $upn   = trim((string) ($item['UserPrincipalName'] ?? ''));
+
+                if ($email === '' || !preg_match('/@kalbe\.co\.id$/i', $email)) {
+                    $email = $upn;
+                }
+
+                $data[] = [
+                    'id' => $response[1]['EmpId'] ?? $item['EmpId'],
+                    'fullname' => $item['EmployeeName'],
+                    'email' => $email,
+                    'phone' => $item['EmpHandPhone'] ?? 'NA',
+                    'jobTitle' => $item['JobTtlName'],
+                    'subDept' => $item['OrgName'],
+                    'dept' => $item['OrgGroupName'],
+                ];
+            }
         }
 
         return response()->json($data, 200);
@@ -126,9 +149,9 @@ class UserCustomRolesController extends Controller
             ]);
 
             // Buat log activity
-            $company = json_decode(auth()->user()->result, true);
+            $data = json_decode(auth()->user()->result ?? '{}', true);
             (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($company['CompName'] ?? '-'),
+                'perusahaan' => strtoupper($data['CompName'] ?? '-'),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'ADD',
                 'catatan' => 'Berhasil Memberikan Role '.$role->name.' untuk "'.$request->email.'"',
@@ -153,9 +176,9 @@ class UserCustomRolesController extends Controller
         }
         $data->delete();
 
-        $company = json_decode(auth()->user()->result, true);
+        $data = json_decode(auth()->user()->result ?? '{}', true);
         (new LogActivityService())->handle([
-            'perusahaan' => strtoupper($company['CompName'] ?? '-'),
+            'perusahaan' => strtoupper($data['CompName'] ?? '-'),
             'user' => strtoupper(auth()->user()->email),
             'tindakan' => 'DELETE',
             'catatan' => 'Berhasil Menghapus Role untuk "'.$data->email.'"',
@@ -188,9 +211,9 @@ class UserCustomRolesController extends Controller
         $userCustomRole->id_sub_department = $request->edit_sub_department;
         $userCustomRole->save();
 
-        $company = json_decode(auth()->user()->result, true);
+        $data = json_decode(auth()->user()->result ?? '{}', true);
         (new LogActivityService())->handle([
-            'perusahaan' => strtoupper($company['CompName'] ?? '-'),
+            'perusahaan' => strtoupper($data['CompName'] ?? '-'),
             'user' => strtoupper(auth()->user()->email),
             'tindakan' => 'UPDATE',
             'catatan' => 'Berhasil mengedit user "'.$userCustomRole->email.'"',
